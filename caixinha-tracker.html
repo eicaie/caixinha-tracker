@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Caixinha" />
+  <title>Caixinha Tracker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background: #0D0D12; color: #F0F0F0; font-family: 'DM Mono', monospace; min-height: 100vh; padding-bottom: 40px; }
+    h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+    .subtitle { font-size: 11px; color: #444; margin-top: 8px; letter-spacing: 0.06em; }
+    .header { padding: 48px 20px 24px; max-width: 680px; margin: 0 auto; }
+    .green { color: #00C896; }
+    .cards { max-width: 680px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 14px; }
+    .card { background: #13131c; border-radius: 18px; padding: 22px 18px; }
+    .card-1 { border: 1px solid #00C89625; }
+    .card-2 { border: 1px solid #7C6FFF25; }
+    .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .card-title { display: flex; align-items: center; gap: 10px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+    .dot-green { background: #00C896; box-shadow: 0 0 8px #00C896; }
+    .dot-purple { background: #7C6FFF; box-shadow: 0 0 8px #7C6FFF; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+    .nome { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+    .tag { padding: 2px 10px; border-radius: 20px; font-size: 11px; }
+    .tag-green { background: #00C89618; color: #00C896; }
+    .tag-purple { background: #7C6FFF18; color: #7C6FFF; }
+    .edit-btn { background: #1a1a2a; color: #666; border: none; border-radius: 8px; padding: 7px 14px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+    .metric { background: #0e0e16; border-radius: 12px; padding: 14px 14px; }
+    .metric-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .metric-val { font-size: 18px; font-weight: 500; }
+    .table-head { display: grid; grid-template-columns: 95px 1fr 1fr 28px; gap: 6px; padding: 0 12px 8px; font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 0.08em; }
+    .reg-row { display: grid; grid-template-columns: 95px 1fr 1fr 28px; gap: 6px; align-items: center; padding: 11px 12px; background: #0e0e16; border-radius: 10px; margin-bottom: 6px; font-size: 13px; }
+    .reg-row:last-child { margin-bottom: 0; }
+    .reg-date { color: #555; font-size: 12px; }
+    .reg-saldo { color: #ddd; }
+    .reg-rend-pos { color: #00C896; }
+    .reg-rend-neg { color: #ff6b6b; }
+    .reg-rend-null { color: #444; }
+    .del-btn { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; width: 28px; text-align: center; }
+    .empty { text-align: center; color: #333; font-size: 12px; padding: 16px 0 12px; letter-spacing: 0.05em; }
+    .add-btn { width: 100%; border: none; border-radius: 10px; padding: 13px 20px; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; margin-top: 4px; }
+    .add-btn-green { background: #00C89618; color: #00C896; }
+    .add-btn-purple { background: #7C6FFF18; color: #7C6FFF; }
+    .tip { background: #13131c; border: 1px solid #1a1a28; border-radius: 14px; padding: 16px 18px; font-size: 12px; color: #444; line-height: 1.7; max-width: 680px; margin: 14px 20px 0; }
+
+    /* Modal */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
+    .overlay.open { display: flex; }
+    .modal { background: #16161f; border: 1px solid #2a2a3e; border-radius: 20px 20px 0 0; padding: 28px 24px 40px; width: 100%; max-width: 680px; animation: slideUp 0.25s ease; }
+    @media (min-height: 700px) { .overlay { align-items: center; } .modal { border-radius: 20px; max-width: 400px; } }
+    @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 22px; }
+    .field { margin-bottom: 16px; }
+    .field label { font-size: 10px; color: #666; letter-spacing: 0.1em; display: block; margin-bottom: 7px; text-transform: uppercase; }
+    .field input { background: #1a1a26; border: 1px solid #2a2a3e; border-radius: 10px; color: #F0F0F0; font-family: 'DM Mono', monospace; font-size: 16px; padding: 14px; width: 100%; outline: none; transition: border 0.2s; }
+    .field input:focus { border-color: #00C896; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 22px; }
+    .cancel-btn { flex: 1; background: #1a1a28; color: #666; border: none; border-radius: 10px; padding: 14px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; }
+    .confirm-btn { flex: 2; border: none; border-radius: 10px; padding: 14px; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .confirm-green { background: #00C896; color: #000; }
+    .confirm-purple { background: #7C6FFF; color: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>CAIXINHA<br><span class="green">TRACKER</span></h1>
+  <div class="subtitle">REGISTRE O SALDO → VEJA QUANTO RENDEU</div>
+</div>
+
+<div class="cards" id="cards"></div>
+
+<div class="tip" id="tip">
+  <span class="green">Como usar:</span> Abra o Nubank → veja o saldo da caixinha → registre aqui com a data.
+  O app calcula sozinho quanto rendeu entre um registro e o próximo.
+  Não precisa registrar todo dia — pode ser semanal ou quando quiser.
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-title" id="modal-title"></div>
+    <div id="modal-body"></div>
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closeModal()">Cancelar</button>
+      <button class="confirm-btn" id="confirm-btn" onclick="confirmar()"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Estado ───────────────────────────────────────────────
+  const STORAGE_KEY = "caixinha_tracker_v1";
+
+  function carregarDados() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch(e) {}
+    return [
+      { id: 1, nome: "Caixinha 1", pct: 115, registros: [] },
+      { id: 2, nome: "Caixinha 2", pct: 100, registros: [] },
+    ];
+  }
+
+  function salvarDados() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(caixinhas));
+  }
+
+  let caixinhas = carregarDados();
+  let modalState = null;
+
+  // ── Formatação ───────────────────────────────────────────
+  function fBRL(v) {
+    return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+  function fData(d) {
+    return new Date(d + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+  }
+  function hoje() {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  // ── Cálculos ─────────────────────────────────────────────
+  function calcRendimentos(registros) {
+    return registros.map((reg, i) => {
+      if (i === 0) return { ...reg, rendimento: null };
+      const ant = registros[i - 1];
+      return { ...reg, rendimento: reg.saldo - ant.saldo };
+    });
+  }
+
+  function totalRendimento(registros) {
+    if (registros.length < 2) return null;
+    return registros[registros.length - 1].saldo - registros[0].saldo;
+  }
+
+  // ── Render ───────────────────────────────────────────────
+  function render() {
+    const container = document.getElementById("cards");
+    container.innerHTML = "";
+
+    caixinhas.forEach((c) => {
+      const cor = c.id === 1 ? "green" : "purple";
+      const hex = c.id === 1 ? "#00C896" : "#7C6FFF";
+      const regs = calcRendimentos(c.registros);
+      const totalRend = totalRendimento(c.registros);
+      const ultimo = c.registros[c.registros.length - 1];
+
+      const saldoAtual = ultimo ? fBRL(ultimo.saldo) : "—";
+      const rendTotal = totalRend !== null
+        ? `<span style="color:${totalRend >= 0 ? '#00C896' : '#ff6b6b'}">${totalRend >= 0 ? "+" : ""}${fBRL(totalRend)}</span>`
+        : `<span style="color:#444">—</span>`;
+
+      let historicoHTML = "";
+      if (regs.length === 0) {
+        historicoHTML = `<div class="empty">nenhum saldo registrado ainda</div>`;
+      } else {
+        historicoHTML = `
+          <div class="table-head">
+            <span>Data</span><span>Saldo</span><span>Rendeu</span><span></span>
+          </div>`;
+        [...regs].reverse().forEach((reg) => {
+          let rendHTML = `<span class="reg-rend-null">—</span>`;
+          if (reg.rendimento !== null) {
+            const cls = reg.rendimento >= 0 ? "reg-rend-pos" : "reg-rend-neg";
+            const sinal = reg.rendimento >= 0 ? "+" : "";
+            rendHTML = `<span class="${cls}">${sinal}${fBRL(reg.rendimento)}</span>`;
+          }
+          historicoHTML += `
+            <div class="reg-row">
+              <span class="reg-date">${fData(reg.data)}</span>
+              <span class="reg-saldo">${fBRL(reg.saldo)}</span>
+              ${rendHTML}
+              <button class="del-btn" onclick="remover(${c.id}, ${reg.id})">×</button>
+            </div>`;
+        });
+      }
+
+      container.innerHTML += `
+        <div class="card card-${c.id}">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="dot dot-${cor}"></div>
+              <span class="nome">${c.nome}</span>
+              <span class="tag tag-${cor}">${c.pct}% CDI</span>
+            </div>
+            <button class="edit-btn" onclick="abrirConfig(${c.id})">✎</button>
+          </div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Saldo atual</div>
+              <div class="metric-val" style="color:${hex}">${saldoAtual}</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Rendimento total</div>
+              <div class="metric-val">${rendTotal}</div>
+            </div>
+          </div>
+          ${historicoHTML}
+          <button class="add-btn add-btn-${cor}" style="margin-top:${regs.length > 0 ? '14px' : '4px'}" onclick="abrirSaldo(${c.id})">
+            + Registrar saldo de hoje
+          </button>
+        </div>`;
+    });
+  }
+
+  // ── Modal ────────────────────────────────────────────────
+  function abrirSaldo(caixinhaId) {
+    const c = caixinhas.find(x => x.id === caixinhaId);
+    modalState = { tipo: "saldo", id: caixinhaId };
+    document.getElementById("modal-title").textContent = `Registrar saldo — ${c.nome}`;
+    document.getElementById("modal-body").innerHTML = `
+      <div class="field">
+        <label>Saldo que aparece no Nubank (R$)</label>
+        <input type="number" inputmode="decimal" id="input-saldo" placeholder="0,00" />
+      </div>
+      <div class="field">
+        <label>Data</label>
+        <input type="date" id="input-data" value="${hoje()}" />
+      </div>`;
+    const btn = document.getElementById("confirm-btn");
+    btn.textContent = "Salvar";
+    btn.className = "confirm-btn confirm-green";
+    document.getElementById("overlay").classList.add("open");
+    setTimeout(() => document.getElementById("input-saldo").focus(), 100);
+  }
+
+  function abrirConfig(caixinhaId) {
+    const c = caixinhas.find(x => x.id === caixinhaId);
+    modalState = { tipo: "config", id: caixinhaId };
+    document.getElementById("modal-title").textContent = "Configurar caixinha";
+    document.getElementById("modal-body").innerHTML = `
+      <div class="field">
+        <label>Nome</label>
+        <input type="text" id="input-nome" value="${c.nome}" />
+      </div>
+      <div class="field">
+        <label>% do CDI</label>
+        <input type="number" inputmode="decimal" id="input-pct" value="${c.pct}" placeholder="ex: 115" />
+      </div>`;
+    const btn = document.getElementById("confirm-btn");
+    btn.textContent = "Salvar";
+    btn.className = "confirm-btn confirm-purple";
+    document.getElementById("overlay").classList.add("open");
+    setTimeout(() => document.getElementById("input-nome").focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById("overlay").classList.remove("open");
+    modalState = null;
+  }
+
+  function fecharModal(e) {
+    if (e.target === document.getElementById("overlay")) closeModal();
+  }
+
+  function confirmar() {
+    if (!modalState) return;
+
+    if (modalState.tipo === "saldo") {
+      const saldo = parseFloat(document.getElementById("input-saldo").value);
+      const data = document.getElementById("input-data").value;
+      if (!saldo || saldo <= 0) { document.getElementById("input-saldo").focus(); return; }
+      caixinhas = caixinhas.map(c => {
+        if (c.id !== modalState.id) return c;
+        const novos = [...c.registros, { id: Date.now(), data, saldo }];
+        novos.sort((a, b) => a.data.localeCompare(b.data));
+        return { ...c, registros: novos };
+      });
+    } else {
+      const nome = document.getElementById("input-nome").value.trim();
+      const pct = parseFloat(document.getElementById("input-pct").value);
+      caixinhas = caixinhas.map(c =>
+        c.id === modalState.id
+          ? { ...c, nome: nome || c.nome, pct: pct || c.pct }
+          : c
+      );
+    }
+
+    salvarDados();
+    closeModal();
+    render();
+  }
+
+  function remover(caixinhaId, regId) {
+    if (!confirm("Remover este registro?")) return;
+    caixinhas = caixinhas.map(c =>
+      c.id === caixinhaId
+        ? { ...c, registros: c.registros.filter(r => r.id !== regId) }
+        : c
+    );
+    salvarDados();
+    render();
+  }
+
+  // Enter no modal
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && modalState) confirmar();
+    if (e.key === "Escape") closeModal();
+  });
+
+  render();
+</script>
+</body>
+</html>
