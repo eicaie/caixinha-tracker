@@ -10,57 +10,85 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: #0D0D12; color: #F0F0F0; font-family: 'DM Mono', monospace; min-height: 100vh; padding-bottom: 40px; }
+    body { background: #0D0D12; color: #F0F0F0; font-family: 'DM Mono', monospace; min-height: 100vh; padding-bottom: 48px; }
     h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
     .subtitle { font-size: 11px; color: #444; margin-top: 8px; letter-spacing: 0.06em; }
     .header { padding: 48px 20px 24px; max-width: 680px; margin: 0 auto; }
     .green { color: #00C896; }
-    .cards { max-width: 680px; margin: 0 auto; padding: 0 20px; display: flex; flex-direction: column; gap: 14px; }
+    .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+    .cards { display: flex; flex-direction: column; gap: 14px; }
     .card { background: #13131c; border-radius: 18px; padding: 22px 18px; }
     .card-1 { border: 1px solid #00C89625; }
     .card-2 { border: 1px solid #7C6FFF25; }
+    .card-3 { border: 1px solid #FF6B9625; }
     .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-    .card-title { display: flex; align-items: center; gap: 10px; }
+    .card-title { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .dot { width: 8px; height: 8px; border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
-    .dot-green { background: #00C896; box-shadow: 0 0 8px #00C896; }
-    .dot-purple { background: #7C6FFF; box-shadow: 0 0 8px #7C6FFF; }
+    .dot-1 { background: #00C896; box-shadow: 0 0 8px #00C896; }
+    .dot-2 { background: #7C6FFF; box-shadow: 0 0 8px #7C6FFF; }
+    .dot-3 { background: #FF6B96; box-shadow: 0 0 8px #FF6B96; }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
     .nome { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
     .tag { padding: 2px 10px; border-radius: 20px; font-size: 11px; }
-    .tag-green { background: #00C89618; color: #00C896; }
-    .tag-purple { background: #7C6FFF18; color: #7C6FFF; }
-    .edit-btn { background: #1a1a2a; color: #666; border: none; border-radius: 8px; padding: 7px 14px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; }
+    .tag-1 { background: #00C89618; color: #00C896; }
+    .tag-2 { background: #7C6FFF18; color: #7C6FFF; }
+    .tag-3 { background: #FF6B9618; color: #FF6B96; }
+    .edit-btn { background: #1a1a2a; color: #666; border: none; border-radius: 8px; padding: 7px 14px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; flex-shrink: 0; }
     .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
-    .metric { background: #0e0e16; border-radius: 12px; padding: 14px 14px; }
+    .metric { background: #0e0e16; border-radius: 12px; padding: 14px; }
     .metric-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
     .metric-val { font-size: 18px; font-weight: 500; }
-    .table-head { display: grid; grid-template-columns: 95px 1fr 1fr 28px; gap: 6px; padding: 0 12px 8px; font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 0.08em; }
-    .reg-row { display: grid; grid-template-columns: 95px 1fr 1fr 28px; gap: 6px; align-items: center; padding: 11px 12px; background: #0e0e16; border-radius: 10px; margin-bottom: 6px; font-size: 13px; }
+    .table-wrap { margin-bottom: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .table-head { display: grid; grid-template-columns: 82px 1fr 82px 1fr 28px; gap: 6px; padding: 0 10px 8px; font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 0.07em; min-width: 340px; }
+    .reg-row { display: grid; grid-template-columns: 82px 1fr 82px 1fr 28px; gap: 6px; align-items: center; padding: 11px 10px; background: #0e0e16; border-radius: 10px; margin-bottom: 6px; font-size: 13px; min-width: 340px; }
     .reg-row:last-child { margin-bottom: 0; }
     .reg-date { color: #555; font-size: 12px; }
     .reg-saldo { color: #ddd; }
-    .reg-rend-pos { color: #00C896; }
-    .reg-rend-neg { color: #ff6b6b; }
-    .reg-rend-null { color: #444; }
+    .mov-entrada { color: #00C896; font-size: 12px; }
+    .mov-saida { color: #ff9f43; font-size: 12px; }
+    .mov-nenhum { color: #333; font-size: 12px; }
+    .rend-pos { color: #00C896; }
+    .rend-neg { color: #ff6b6b; }
+    .rend-null { color: #444; }
     .del-btn { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; width: 28px; text-align: center; }
-    .empty { text-align: center; color: #333; font-size: 12px; padding: 16px 0 12px; letter-spacing: 0.05em; }
-    .add-btn { width: 100%; border: none; border-radius: 10px; padding: 13px 20px; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; margin-top: 4px; }
-    .add-btn-green { background: #00C89618; color: #00C896; }
-    .add-btn-purple { background: #7C6FFF18; color: #7C6FFF; }
-    .tip { background: #13131c; border: 1px solid #1a1a28; border-radius: 14px; padding: 16px 18px; font-size: 12px; color: #444; line-height: 1.7; max-width: 680px; margin: 14px 20px 0; }
-
-    /* Modal */
-    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
+    .empty { text-align: center; color: #333; font-size: 12px; padding: 16px 0 12px; }
+    .add-btn { width: 100%; border: none; border-radius: 10px; padding: 13px 20px; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; }
+    .add-1 { background: #00C89618; color: #00C896; }
+    .add-2 { background: #7C6FFF18; color: #7C6FFF; }
+    .add-3 { background: #FF6B9618; color: #FF6B96; }
+    .chart-card { background: #13131c; border: 1px solid #1e1e2e; border-radius: 18px; padding: 22px 18px; margin-bottom: 14px; }
+    .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+    .chart-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+    .month-nav { display: flex; align-items: center; gap: 10px; }
+    .nav-btn { background: #1a1a2a; border: none; color: #888; border-radius: 8px; width: 32px; height: 32px; font-size: 18px; cursor: pointer; }
+    .month-label { font-size: 12px; color: #aaa; min-width: 88px; text-align: center; }
+    .chart-area { position: relative; height: 160px; }
+    .chart-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #777; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .chart-total { font-size: 12px; color: #555; margin-top: 8px; }
+    .chart-total span { color: #00C896; font-weight: 500; }
+    .backup-bar { display: flex; gap: 10px; margin-top: 12px; }
+    .bkp-btn { flex: 1; border: none; border-radius: 12px; padding: 13px; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; }
+    .bkp-export { background: #1a2a22; color: #00C896; border: 1px solid #00C89630; }
+    .bkp-import { background: #1a1a2a; color: #7C6FFF; border: 1px solid #7C6FFF30; }
+    .tip { background: #13131c; border: 1px solid #1a1a28; border-radius: 14px; padding: 16px 18px; font-size: 12px; color: #444; line-height: 1.7; margin-top: 12px; }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
     .overlay.open { display: flex; }
-    .modal { background: #16161f; border: 1px solid #2a2a3e; border-radius: 20px 20px 0 0; padding: 28px 24px 40px; width: 100%; max-width: 680px; animation: slideUp 0.25s ease; }
-    @media (min-height: 700px) { .overlay { align-items: center; } .modal { border-radius: 20px; max-width: 400px; } }
-    @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 22px; }
-    .field { margin-bottom: 16px; }
+    .modal { background: #16161f; border: 1px solid #2a2a3e; border-radius: 20px 20px 0 0; padding: 28px 22px 44px; width: 100%; max-width: 680px; animation: slideUp 0.22s ease; }
+    @media (min-height: 700px) { .overlay { align-items: center; } .modal { border-radius: 20px; max-width: 420px; } }
+    @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 4px; }
+    .modal-sub { font-size: 11px; color: #555; margin-bottom: 20px; }
+    .field { margin-bottom: 14px; }
     .field label { font-size: 10px; color: #666; letter-spacing: 0.1em; display: block; margin-bottom: 7px; text-transform: uppercase; }
     .field input { background: #1a1a26; border: 1px solid #2a2a3e; border-radius: 10px; color: #F0F0F0; font-family: 'DM Mono', monospace; font-size: 16px; padding: 14px; width: 100%; outline: none; transition: border 0.2s; }
     .field input:focus { border-color: #00C896; }
-    .modal-btns { display: flex; gap: 10px; margin-top: 22px; }
+    .field-hint { font-size: 10px; color: #444; margin-top: 5px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .divider { border: none; border-top: 1px solid #1e1e2e; margin: 16px 0; }
+    .sec-label { font-size: 11px; color: #555; margin-bottom: 12px; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
     .cancel-btn { flex: 1; background: #1a1a28; color: #666; border: none; border-radius: 10px; padding: 14px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; }
     .confirm-btn { flex: 2; border: none; border-radius: 10px; padding: 14px; font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; cursor: pointer; }
     .confirm-green { background: #00C896; color: #000; }
@@ -74,18 +102,38 @@
   <div class="subtitle">REGISTRE O SALDO → VEJA QUANTO RENDEU</div>
 </div>
 
-<div class="cards" id="cards"></div>
+<div class="wrap">
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">Rendimento mensal acumulado</span>
+      <div class="month-nav">
+        <button class="nav-btn" onclick="mudarMes(-1)">‹</button>
+        <span class="month-label" id="month-label"></span>
+        <button class="nav-btn" id="nav-next" onclick="mudarMes(1)">›</button>
+      </div>
+    </div>
+    <div class="chart-area"><canvas id="chart"></canvas></div>
+    <div class="chart-legend" id="chart-legend"></div>
+    <div class="chart-total" id="chart-total"></div>
+  </div>
 
-<div class="tip" id="tip">
-  <span class="green">Como usar:</span> Abra o Nubank → veja o saldo da caixinha → registre aqui com a data.
-  O app calcula sozinho quanto rendeu entre um registro e o próximo.
-  Não precisa registrar todo dia — pode ser semanal ou quando quiser.
+  <div class="cards" id="cards"></div>
+
+  <div class="backup-bar">
+    <button class="bkp-btn bkp-export" onclick="exportarBackup()">⬇ Exportar backup</button>
+    <button class="bkp-btn bkp-import" onclick="document.getElementById('import-file').click()">⬆ Importar backup</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(event)" />
+  </div>
+
+  <div class="tip">
+    <span class="green">Como usar:</span> Registre o saldo do Nubank ou PicPay. Se fez depósito ou retirada no período, informe — o app desconta e mostra só o rendimento real.
+  </div>
 </div>
 
-<!-- Modal -->
 <div class="overlay" id="overlay" onclick="fecharModal(event)">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
     <div id="modal-body"></div>
     <div class="modal-btns">
       <button class="cancel-btn" onclick="closeModal()">Cancelar</button>
@@ -95,212 +143,345 @@
 </div>
 
 <script>
-  // ── Estado ───────────────────────────────────────────────
-  const STORAGE_KEY = "caixinha_tracker_v1";
+  const STORAGE_KEY = "caixinha_tracker_v2";
+  const HEX = { 1: "#00C896", 2: "#7C6FFF", 3: "#FF6B96" };
+  const NOMES_MES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
   function carregarDados() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        const dados = JSON.parse(raw);
+        if (!dados.find(c => c.id === 3))
+          dados.push({ id: 3, nome: "PicPay 2", pct: 121, registros: [] });
+        return dados;
+      }
     } catch(e) {}
     return [
-      { id: 1, nome: "Caixinha 1", pct: 115, registros: [] },
-      { id: 2, nome: "Caixinha 2", pct: 100, registros: [] },
+      { id: 1, nome: "Nubank 1", pct: 115, registros: [] },
+      { id: 2, nome: "Nubank 2", pct: 100, registros: [] },
+      { id: 3, nome: "PicPay 2", pct: 121, registros: [] },
     ];
   }
 
-  function salvarDados() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(caixinhas));
-  }
+  function salvarDados() { localStorage.setItem(STORAGE_KEY, JSON.stringify(caixinhas)); }
 
   let caixinhas = carregarDados();
   let modalState = null;
+  let mesAtual = new Date(); mesAtual.setDate(1);
 
-  // ── Formatação ───────────────────────────────────────────
-  function fBRL(v) {
-    return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  }
-  function fData(d) {
-    return new Date(d + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
-  }
-  function hoje() {
-    return new Date().toISOString().split("T")[0];
-  }
+  function fBRL(v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+  function fData(d) { return new Date(d+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}); }
+  function hoje() { return new Date().toISOString().split("T")[0]; }
 
-  // ── Cálculos ─────────────────────────────────────────────
   function calcRendimentos(registros) {
     return registros.map((reg, i) => {
       if (i === 0) return { ...reg, rendimento: null };
-      const ant = registros[i - 1];
-      return { ...reg, rendimento: reg.saldo - ant.saldo };
+      const ant = registros[i-1];
+      return { ...reg, rendimento: reg.saldo - ant.saldo - (reg.entrada||0) + (reg.saida||0) };
     });
   }
 
   function totalRendimento(registros) {
     if (registros.length < 2) return null;
-    return registros[registros.length - 1].saldo - registros[0].saldo;
+    return calcRendimentos(registros).filter(r => r.rendimento !== null).reduce((a,r) => a + r.rendimento, 0);
   }
 
-  // ── Render ───────────────────────────────────────────────
+  // ── Gráfico ──────────────────────────────────────────────
+  function mudarMes(delta) {
+    mesAtual.setMonth(mesAtual.getMonth() + delta);
+    renderChart();
+  }
+
+  function renderChart() {
+    const ano = mesAtual.getFullYear();
+    const mes = mesAtual.getMonth();
+    document.getElementById("month-label").textContent = `${NOMES_MES[mes]} ${ano}`;
+    const agora = new Date();
+    const futuro = ano > agora.getFullYear() || (ano === agora.getFullYear() && mes > agora.getMonth());
+    document.getElementById("nav-next").style.opacity = futuro ? "0.2" : "1";
+    document.getElementById("nav-next").style.pointerEvents = futuro ? "none" : "auto";
+
+    const canvas = document.getElementById("chart");
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.parentElement.clientWidth;
+    const H = 160;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W+"px"; canvas.style.height = H+"px";
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, W, H);
+
+    // Dias do mês como eixo X, acumulando rendimentos dia a dia
+    const diasNoMes = new Date(ano, mes+1, 0).getDate();
+
+    // Para cada caixinha, montar array de rendimento acumulado por dia
+    const datasets = caixinhas.map(c => {
+      const regs = calcRendimentos(c.registros).filter(r => {
+        if (r.rendimento === null) return false;
+        const d = new Date(r.data+"T12:00:00");
+        return d.getFullYear() === ano && d.getMonth() === mes;
+      });
+      // acumular por dia
+      const acum = new Array(diasNoMes).fill(0);
+      regs.forEach(r => {
+        const dia = new Date(r.data+"T12:00:00").getDate() - 1; // 0-indexed
+        for (let i = dia; i < diasNoMes; i++) acum[i] += r.rendimento;
+      });
+      return acum;
+    });
+
+    const temDados = datasets.some(d => d.some(v => v !== 0));
+
+    if (!temDados) {
+      ctx.fillStyle = "#2a2a3a";
+      ctx.font = "12px DM Mono, monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("Nenhum registro neste mês", W/2, H/2);
+      document.getElementById("chart-legend").innerHTML = "";
+      document.getElementById("chart-total").innerHTML = "";
+      return;
+    }
+
+    const padL = 54, padR = 12, padT = 10, padB = 28;
+    const cW = W - padL - padR, cH = H - padT - padB;
+    const allVals = datasets.flatMap(d => d);
+    const maxVal = Math.max(...allVals, 0.01);
+    const minVal = Math.min(...allVals, 0);
+    const range = maxVal - minVal || 1;
+
+    function xP(i) { return padL + (i / (diasNoMes-1)) * cW; }
+    function yP(v) { return padT + cH - ((v - minVal) / range) * cH; }
+
+    // Grid
+    ctx.strokeStyle = "#1a1a26"; ctx.lineWidth = 1;
+    [0,0.25,0.5,0.75,1].forEach(t => {
+      const y = padT + t * cH;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W-padR, y); ctx.stroke();
+    });
+
+    // Linha zero
+    if (minVal < 0) {
+      ctx.strokeStyle = "#2e2e3e"; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(padL, yP(0)); ctx.lineTo(W-padR, yP(0)); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Linhas + área
+    datasets.forEach((data, ci) => {
+      const cor = HEX[ci+1];
+      // Área
+      ctx.save(); ctx.globalAlpha = 0.08; ctx.fillStyle = cor;
+      ctx.beginPath(); ctx.moveTo(xP(0), yP(0));
+      data.forEach((v,i) => ctx.lineTo(xP(i), yP(v)));
+      ctx.lineTo(xP(diasNoMes-1), yP(0)); ctx.closePath(); ctx.fill(); ctx.restore();
+      // Linha
+      ctx.strokeStyle = cor; ctx.lineWidth = 2; ctx.lineJoin = "round";
+      ctx.beginPath();
+      data.forEach((v,i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
+      ctx.stroke();
+      // Ponto final
+      const lastVal = data[diasNoMes-1];
+      if (lastVal !== 0) {
+        ctx.fillStyle = cor; ctx.beginPath();
+        ctx.arc(xP(diasNoMes-1), yP(lastVal), 4, 0, Math.PI*2); ctx.fill();
+      }
+    });
+
+    // Eixo X — mostrar apenas dias 1, 8, 15, 22, último
+    ctx.fillStyle = "#555"; ctx.font = "10px DM Mono, monospace"; ctx.textAlign = "center";
+    [0,7,14,21,diasNoMes-1].forEach(i => {
+      if (i < diasNoMes) ctx.fillText(i+1, xP(i), H-6);
+    });
+
+    // Eixo Y
+    ctx.textAlign = "right";
+    [0, 0.5, 1].forEach(t => {
+      const v = minVal + t * range;
+      ctx.fillText("R$"+(v >= 0 ? "" : "-")+Math.abs(v).toFixed(0), padL-4, yP(v)+4);
+    });
+
+    // Legenda
+    document.getElementById("chart-legend").innerHTML = caixinhas.map((c,i) =>
+      `<div class="legend-item"><div class="legend-dot" style="background:${HEX[i+1]}"></div><span>${c.nome}</span></div>`
+    ).join("");
+
+    // Total
+    const totalMes = datasets.reduce((acc, d) => acc + d[diasNoMes-1], 0);
+    document.getElementById("chart-total").innerHTML = temDados
+      ? `Total acumulado no mês: <span>${totalMes >= 0 ? "+" : ""}${fBRL(totalMes)}</span>` : "";
+  }
+
+  // ── Cards ────────────────────────────────────────────────
   function render() {
     const container = document.getElementById("cards");
     container.innerHTML = "";
 
     caixinhas.forEach((c) => {
-      const cor = c.id === 1 ? "green" : "purple";
-      const hex = c.id === 1 ? "#00C896" : "#7C6FFF";
       const regs = calcRendimentos(c.registros);
       const totalRend = totalRendimento(c.registros);
-      const ultimo = c.registros[c.registros.length - 1];
-
+      const ultimo = c.registros[c.registros.length-1];
       const saldoAtual = ultimo ? fBRL(ultimo.saldo) : "—";
-      const rendTotal = totalRend !== null
-        ? `<span style="color:${totalRend >= 0 ? '#00C896' : '#ff6b6b'}">${totalRend >= 0 ? "+" : ""}${fBRL(totalRend)}</span>`
+      const rendTotalHTML = totalRend !== null
+        ? `<span style="color:${totalRend>=0?'#00C896':'#ff6b6b'}">${totalRend>=0?"+":""}${fBRL(totalRend)}</span>`
         : `<span style="color:#444">—</span>`;
 
-      let historicoHTML = "";
+      let hist = "";
       if (regs.length === 0) {
-        historicoHTML = `<div class="empty">nenhum saldo registrado ainda</div>`;
+        hist = `<div class="empty">nenhum saldo registrado ainda</div>`;
       } else {
-        historicoHTML = `
-          <div class="table-head">
-            <span>Data</span><span>Saldo</span><span>Rendeu</span><span></span>
-          </div>`;
-        [...regs].reverse().forEach((reg) => {
-          let rendHTML = `<span class="reg-rend-null">—</span>`;
+        hist = `<div class="table-wrap"><div class="table-head"><span>Data</span><span>Saldo</span><span>Moviment.</span><span>Rendeu</span><span></span></div>`;
+        [...regs].reverse().forEach(reg => {
+          const ent = reg.entrada||0, sai = reg.saida||0;
+          let mov = `<span class="mov-nenhum">—</span>`;
+          if (ent > 0) mov = `<span class="mov-entrada">+${fBRL(ent)}</span>`;
+          else if (sai > 0) mov = `<span class="mov-saida">-${fBRL(sai)}</span>`;
+          let rend = `<span class="rend-null">—</span>`;
           if (reg.rendimento !== null) {
-            const cls = reg.rendimento >= 0 ? "reg-rend-pos" : "reg-rend-neg";
-            const sinal = reg.rendimento >= 0 ? "+" : "";
-            rendHTML = `<span class="${cls}">${sinal}${fBRL(reg.rendimento)}</span>`;
+            rend = `<span class="${reg.rendimento>=0?'rend-pos':'rend-neg'}">${reg.rendimento>=0?"+":""}${fBRL(reg.rendimento)}</span>`;
           }
-          historicoHTML += `
-            <div class="reg-row">
-              <span class="reg-date">${fData(reg.data)}</span>
-              <span class="reg-saldo">${fBRL(reg.saldo)}</span>
-              ${rendHTML}
-              <button class="del-btn" onclick="remover(${c.id}, ${reg.id})">×</button>
-            </div>`;
+          hist += `<div class="reg-row">
+            <span class="reg-date">${fData(reg.data)}</span>
+            <span class="reg-saldo">${fBRL(reg.saldo)}</span>
+            ${mov}${rend}
+            <button class="del-btn" onclick="remover(${c.id},${reg.id})">×</button>
+          </div>`;
         });
+        hist += `</div>`;
       }
 
-      container.innerHTML += `
-        <div class="card card-${c.id}">
-          <div class="card-head">
-            <div class="card-title">
-              <div class="dot dot-${cor}"></div>
-              <span class="nome">${c.nome}</span>
-              <span class="tag tag-${cor}">${c.pct}% CDI</span>
-            </div>
-            <button class="edit-btn" onclick="abrirConfig(${c.id})">✎</button>
+      container.innerHTML += `<div class="card card-${c.id}">
+        <div class="card-head">
+          <div class="card-title">
+            <div class="dot dot-${c.id}"></div>
+            <span class="nome">${c.nome}</span>
+            <span class="tag tag-${c.id}">${c.pct}% CDI</span>
           </div>
-          <div class="metrics">
-            <div class="metric">
-              <div class="metric-label">Saldo atual</div>
-              <div class="metric-val" style="color:${hex}">${saldoAtual}</div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Rendimento total</div>
-              <div class="metric-val">${rendTotal}</div>
-            </div>
+          <button class="edit-btn" onclick="abrirConfig(${c.id})">✎</button>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Saldo atual</div>
+            <div class="metric-val" style="color:${HEX[c.id]}">${saldoAtual}</div>
           </div>
-          ${historicoHTML}
-          <button class="add-btn add-btn-${cor}" style="margin-top:${regs.length > 0 ? '14px' : '4px'}" onclick="abrirSaldo(${c.id})">
-            + Registrar saldo de hoje
-          </button>
-        </div>`;
+          <div class="metric">
+            <div class="metric-label">Rendimento total</div>
+            <div class="metric-val">${rendTotalHTML}</div>
+          </div>
+        </div>
+        ${hist}
+        <button class="add-btn add-${c.id}" style="margin-top:${regs.length>0?'14px':'4px'}" onclick="abrirSaldo(${c.id})">
+          + Registrar saldo
+        </button>
+      </div>`;
     });
+
+    renderChart();
   }
 
-  // ── Modal ────────────────────────────────────────────────
-  function abrirSaldo(caixinhaId) {
-    const c = caixinhas.find(x => x.id === caixinhaId);
-    modalState = { tipo: "saldo", id: caixinhaId };
-    document.getElementById("modal-title").textContent = `Registrar saldo — ${c.nome}`;
+  // ── Modais ───────────────────────────────────────────────
+  function abrirSaldo(id) {
+    const c = caixinhas.find(x => x.id === id);
+    modalState = { tipo: "saldo", id };
+    document.getElementById("modal-title").textContent = "Registrar saldo";
+    document.getElementById("modal-sub").textContent = c.nome;
     document.getElementById("modal-body").innerHTML = `
-      <div class="field">
-        <label>Saldo que aparece no Nubank (R$)</label>
-        <input type="number" inputmode="decimal" id="input-saldo" placeholder="0,00" />
-      </div>
-      <div class="field">
-        <label>Data</label>
-        <input type="date" id="input-data" value="${hoje()}" />
+      <div class="field"><label>Saldo atual (R$)</label>
+        <input type="number" inputmode="decimal" id="input-saldo" placeholder="0,00" /></div>
+      <div class="field"><label>Data</label>
+        <input type="date" id="input-data" value="${hoje()}" /></div>
+      <hr class="divider" />
+      <div class="sec-label">MOVIMENTAÇÃO NO PERÍODO (opcional)</div>
+      <div class="field-row">
+        <div>
+          <label style="font-size:10px;color:#666;letter-spacing:0.1em;display:block;margin-bottom:7px;text-transform:uppercase;">Depósito (R$)</label>
+          <input type="number" inputmode="decimal" id="input-entrada" placeholder="0,00" style="background:#1a1a26;border:1px solid #2a2a3e;border-radius:10px;color:#F0F0F0;font-family:'DM Mono',monospace;font-size:16px;padding:14px;width:100%;outline:none;" />
+          <div class="field-hint">Dinheiro que você colocou</div>
+        </div>
+        <div>
+          <label style="font-size:10px;color:#666;letter-spacing:0.1em;display:block;margin-bottom:7px;text-transform:uppercase;">Retirada (R$)</label>
+          <input type="number" inputmode="decimal" id="input-saida" placeholder="0,00" style="background:#1a1a26;border:1px solid #2a2a3e;border-radius:10px;color:#F0F0F0;font-family:'DM Mono',monospace;font-size:16px;padding:14px;width:100%;outline:none;" />
+          <div class="field-hint">Dinheiro que você tirou</div>
+        </div>
       </div>`;
-    const btn = document.getElementById("confirm-btn");
-    btn.textContent = "Salvar";
-    btn.className = "confirm-btn confirm-green";
+    document.getElementById("confirm-btn").textContent = "Salvar";
+    document.getElementById("confirm-btn").className = "confirm-btn confirm-green";
     document.getElementById("overlay").classList.add("open");
     setTimeout(() => document.getElementById("input-saldo").focus(), 100);
   }
 
-  function abrirConfig(caixinhaId) {
-    const c = caixinhas.find(x => x.id === caixinhaId);
-    modalState = { tipo: "config", id: caixinhaId };
+  function abrirConfig(id) {
+    const c = caixinhas.find(x => x.id === id);
+    modalState = { tipo: "config", id };
     document.getElementById("modal-title").textContent = "Configurar caixinha";
+    document.getElementById("modal-sub").textContent = "";
     document.getElementById("modal-body").innerHTML = `
-      <div class="field">
-        <label>Nome</label>
-        <input type="text" id="input-nome" value="${c.nome}" />
-      </div>
-      <div class="field">
-        <label>% do CDI</label>
-        <input type="number" inputmode="decimal" id="input-pct" value="${c.pct}" placeholder="ex: 115" />
-      </div>`;
-    const btn = document.getElementById("confirm-btn");
-    btn.textContent = "Salvar";
-    btn.className = "confirm-btn confirm-purple";
+      <div class="field"><label>Nome</label>
+        <input type="text" id="input-nome" value="${c.nome}" /></div>
+      <div class="field"><label>% do CDI</label>
+        <input type="number" inputmode="decimal" id="input-pct" value="${c.pct}" placeholder="ex: 121" /></div>`;
+    document.getElementById("confirm-btn").textContent = "Salvar";
+    document.getElementById("confirm-btn").className = "confirm-btn confirm-purple";
     document.getElementById("overlay").classList.add("open");
     setTimeout(() => document.getElementById("input-nome").focus(), 100);
   }
 
-  function closeModal() {
-    document.getElementById("overlay").classList.remove("open");
-    modalState = null;
-  }
-
-  function fecharModal(e) {
-    if (e.target === document.getElementById("overlay")) closeModal();
-  }
+  function closeModal() { document.getElementById("overlay").classList.remove("open"); modalState = null; }
+  function fecharModal(e) { if (e.target === document.getElementById("overlay")) closeModal(); }
 
   function confirmar() {
     if (!modalState) return;
-
     if (modalState.tipo === "saldo") {
       const saldo = parseFloat(document.getElementById("input-saldo").value);
       const data = document.getElementById("input-data").value;
+      const entrada = parseFloat(document.getElementById("input-entrada").value) || 0;
+      const saida = parseFloat(document.getElementById("input-saida").value) || 0;
       if (!saldo || saldo <= 0) { document.getElementById("input-saldo").focus(); return; }
       caixinhas = caixinhas.map(c => {
         if (c.id !== modalState.id) return c;
-        const novos = [...c.registros, { id: Date.now(), data, saldo }];
-        novos.sort((a, b) => a.data.localeCompare(b.data));
+        const novos = [...c.registros, { id: Date.now(), data, saldo, entrada, saida }];
+        novos.sort((a,b) => a.data.localeCompare(b.data));
         return { ...c, registros: novos };
       });
     } else {
       const nome = document.getElementById("input-nome").value.trim();
       const pct = parseFloat(document.getElementById("input-pct").value);
       caixinhas = caixinhas.map(c =>
-        c.id === modalState.id
-          ? { ...c, nome: nome || c.nome, pct: pct || c.pct }
-          : c
-      );
+        c.id === modalState.id ? { ...c, nome: nome||c.nome, pct: pct||c.pct } : c);
     }
-
-    salvarDados();
-    closeModal();
-    render();
+    salvarDados(); closeModal(); render();
   }
 
   function remover(caixinhaId, regId) {
     if (!confirm("Remover este registro?")) return;
     caixinhas = caixinhas.map(c =>
-      c.id === caixinhaId
-        ? { ...c, registros: c.registros.filter(r => r.id !== regId) }
-        : c
-    );
-    salvarDados();
-    render();
+      c.id === caixinhaId ? { ...c, registros: c.registros.filter(r => r.id !== regId) } : c);
+    salvarDados(); render();
   }
 
-  // Enter no modal
+  function exportarBackup() {
+    const blob = new Blob([JSON.stringify(caixinhas, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `caixinha-backup-${new Date().toISOString().split("T")[0]}.json`;
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  function importarBackup(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const dados = JSON.parse(e.target.result);
+        if (!Array.isArray(dados)) throw new Error();
+        if (confirm("Isso vai substituir os dados atuais. Confirma?")) {
+          caixinhas = dados; salvarDados(); render(); alert("Backup restaurado!");
+        }
+      } catch { alert("Arquivo inválido."); }
+    };
+    reader.readAsText(file); event.target.value = "";
+  }
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && modalState) confirmar();
     if (e.key === "Escape") closeModal();
