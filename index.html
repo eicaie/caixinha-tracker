@@ -34,11 +34,17 @@
     .tag-2 { background: #7C6FFF18; color: #7C6FFF; }
     .tag-3 { background: #FF6B9618; color: #FF6B96; }
     .edit-btn { background: #1a1a2a; color: #666; border: none; border-radius: 8px; padding: 7px 14px; font-family: 'DM Mono', monospace; font-size: 13px; cursor: pointer; flex-shrink: 0; }
-    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+
+    /* Metrics: saldo + rendimento mês lado a lado, total abaixo menor */
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
     .metric { background: #0e0e16; border-radius: 12px; padding: 14px; }
     .metric-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
     .metric-val { font-size: 18px; font-weight: 500; }
-    .table-wrap { margin-bottom: 14px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .metric-total { background: #0e0e16; border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+    .metric-total-label { font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 0.1em; }
+    .metric-total-val { font-size: 13px; font-weight: 500; }
+
+    .table-wrap { margin-bottom: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .table-head { display: grid; grid-template-columns: 82px 1fr 82px 1fr 28px; gap: 6px; padding: 0 10px 8px; font-size: 10px; color: #444; text-transform: uppercase; letter-spacing: 0.07em; min-width: 340px; }
     .reg-row { display: grid; grid-template-columns: 82px 1fr 82px 1fr 28px; gap: 6px; align-items: center; padding: 11px 10px; background: #0e0e16; border-radius: 10px; margin-bottom: 6px; font-size: 13px; min-width: 340px; }
     .reg-row:last-child { margin-bottom: 0; }
@@ -52,10 +58,10 @@
     .rend-null { color: #444; }
     .del-btn { background: none; border: none; color: #333; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; width: 28px; text-align: center; }
     .empty { text-align: center; color: #333; font-size: 12px; padding: 16px 0 12px; }
-    .add-btn { width: 100%; border: none; border-radius: 10px; padding: 13px 20px; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; }
-    .add-1 { background: #00C89618; color: #00C896; }
-    .add-2 { background: #7C6FFF18; color: #7C6FFF; }
-    .add-3 { background: #FF6B9618; color: #FF6B96; }
+    .ver-mais-btn { width: 100%; background: none; border: 1px solid #1e1e2e; border-radius: 10px; padding: 10px; font-family: 'DM Mono', monospace; font-size: 12px; color: #555; cursor: pointer; margin-top: 8px; margin-bottom: 8px; }
+    .ver-mais-btn:hover { color: #888; border-color: #2e2e3e; }
+
+    /* Chart */
     .chart-card { background: #13131c; border: 1px solid #1e1e2e; border-radius: 18px; padding: 22px 18px; margin-bottom: 14px; }
     .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
     .chart-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
@@ -68,14 +74,54 @@
     .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .chart-total { font-size: 12px; color: #555; margin-top: 8px; }
     .chart-total span { color: #00C896; font-weight: 500; }
+
+    /* Resumo geral */
+    .summary-card { background: #13131c; border: 1px solid #00C89620; border-radius: 18px; padding: 20px 18px; margin-bottom: 14px; }
+    .summary-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: #555; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .summary-item { background: #0e0e16; border-radius: 12px; padding: 14px; }
+    .summary-item.full { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; }
+    .summary-label { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+    .summary-val { font-size: 20px; font-weight: 500; color: #00C896; }
+    .summary-val-sm { font-size: 13px; font-weight: 500; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a2a22; color: #00C896; border: 1px solid #00C89640; border-radius: 30px; padding: 10px 22px; font-size: 13px; opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 300; pointer-events: none; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* Último lançamento */
+    .last-entry { font-size: 11px; color: #444; margin-top: 6px; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .last-entry-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Botão único de registro */
+    .reg-btn-wrap { margin-bottom: 14px; }
+    .reg-btn-main { width: 100%; background: #00C89618; color: #00C896; border: 1px solid #00C89630; border-radius: 12px; padding: 14px; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; cursor: pointer; }
+
+    /* Seletor de caixinha no modal */
+    .cx-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+    .cx-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #1a1a26; border-radius: 12px; cursor: pointer; border: 1px solid #2a2a3e; transition: border 0.15s; }
+    .cx-item:hover { border-color: #3a3a4e; }
+    .cx-item-left { display: flex; align-items: center; gap: 10px; }
+    .cx-item-name { font-size: 14px; font-weight: 500; }
+    .cx-item-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+    .cx-actions { display: flex; gap: 6px; }
+    .cx-del-btn { background: #2a1a1a; color: #ff6b6b; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; cursor: pointer; font-family: 'DM Mono', monospace; }
+    .cx-edit-btn { background: #1a1a2a; color: #777; border: none; border-radius: 8px; padding: 6px 10px; font-size: 11px; cursor: pointer; font-family: 'DM Mono', monospace; }
+    .new-cx-btn { width: 100%; background: none; border: 1px dashed #2a2a3e; border-radius: 12px; padding: 14px; font-family: 'DM Mono', monospace; font-size: 13px; color: #555; cursor: pointer; margin-top: 4px; }
+    .new-cx-btn:hover { border-color: #3a3a4e; color: #777; }
+    .modal-back-btn { background: none; border: none; color: #666; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; margin-bottom: 16px; padding: 0; }
+
+    /* Backup */
     .backup-bar { display: flex; gap: 10px; margin-top: 12px; }
     .bkp-btn { flex: 1; border: none; border-radius: 12px; padding: 13px; font-family: 'DM Mono', monospace; font-size: 12px; cursor: pointer; }
     .bkp-export { background: #1a2a22; color: #00C896; border: 1px solid #00C89630; }
     .bkp-import { background: #1a1a2a; color: #7C6FFF; border: 1px solid #7C6FFF30; }
     .tip { background: #13131c; border: 1px solid #1a1a28; border-radius: 14px; padding: 16px 18px; font-size: 12px; color: #444; line-height: 1.7; margin-top: 12px; }
+
+    /* Modal */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(6px); }
     .overlay.open { display: flex; }
-    .modal { background: #16161f; border: 1px solid #2a2a3e; border-radius: 20px 20px 0 0; padding: 28px 22px 44px; width: 100%; max-width: 680px; animation: slideUp 0.22s ease; }
+    .modal { background: #16161f; border: 1px solid #2a2a3e; border-radius: 20px 20px 0 0; padding: 28px 22px 44px; width: 100%; max-width: 680px; animation: slideUp 0.22s ease; max-height: 90vh; overflow-y: auto; }
     @media (min-height: 700px) { .overlay { align-items: center; } .modal { border-radius: 20px; max-width: 420px; } }
     @keyframes slideUp { from{transform:translateY(60px);opacity:0} to{transform:translateY(0);opacity:1} }
     .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 4px; }
@@ -103,6 +149,13 @@
 </div>
 
 <div class="wrap">
+  <!-- Resumo geral -->
+  <div class="summary-card" id="summary-card">
+    <div class="summary-title">Resumo geral</div>
+    <div class="summary-grid" id="summary-grid"></div>
+  </div>
+
+  <!-- Gráfico -->
   <div class="chart-card">
     <div class="chart-header">
       <span class="chart-title">Rendimento mensal acumulado</span>
@@ -117,27 +170,37 @@
     <div class="chart-total" id="chart-total"></div>
   </div>
 
+  <!-- Botão único de registro -->
+  <div class="reg-btn-wrap">
+    <button class="reg-btn-main" onclick="abrirGerenciar()">+ Registrar saldo</button>
+  </div>
+
+  <!-- Cards das caixinhas ativas -->
   <div class="cards" id="cards"></div>
 
+  <!-- Backup -->
   <div class="backup-bar">
     <button class="bkp-btn bkp-export" onclick="exportarBackup()">⬇ Exportar backup</button>
     <button class="bkp-btn bkp-import" onclick="document.getElementById('import-file').click()">⬆ Importar backup</button>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(event)" />
   </div>
-
   <div class="tip">
-    <span class="green">Como usar:</span> Registre o saldo do Nubank ou PicPay. Se fez depósito ou retirada no período, informe — o app desconta e mostra só o rendimento real.
+    <span class="green">Como usar:</span> Toque em "Registrar saldo" para lançar valores ou gerenciar caixinhas. Se fez depósito ou retirada no período, informe — o app desconta e mostra só o rendimento real.
   </div>
 </div>
 
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Modal -->
 <div class="overlay" id="overlay" onclick="fecharModal(event)">
-  <div class="modal">
+  <div class="modal" id="modal">
     <div class="modal-title" id="modal-title"></div>
     <div class="modal-sub" id="modal-sub"></div>
     <div id="modal-body"></div>
-    <div class="modal-btns">
+    <div class="modal-btns" id="modal-btns">
       <button class="cancel-btn" onclick="closeModal()">Cancelar</button>
-      <button class="confirm-btn" id="confirm-btn" onclick="confirmar()"></button>
+      <button class="confirm-btn confirm-green" id="confirm-btn" onclick="confirmar()">Salvar</button>
     </div>
   </div>
 </div>
@@ -146,21 +209,41 @@
   const STORAGE_KEY = "caixinha_tracker_v2";
   const HEX = { 1: "#00C896", 2: "#7C6FFF", 3: "#FF6B96" };
   const NOMES_MES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+  // Cores para caixinhas extras criadas pelo usuário
+  const EXTRA_HEX = ["#FFB347","#4FC3F7","#CE93D8","#80CBC4"];
 
-  function carregarDados() {
+  function getHex(id) { return HEX[id] || EXTRA_HEX[(id-4) % EXTRA_HEX.length]; }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  function diasDesdeUltimo(registros) {
+    if (!registros.length) return null;
+    const ultimo = registros[registros.length - 1];
+    const diff = Math.floor((new Date() - new Date(ultimo.data + "T12:00:00")) / 86400000);
+    if (diff === 0) return "hoje";
+    if (diff === 1) return "ontem";
+    return `há ${diff} dias`;
+  }
+
+
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const dados = JSON.parse(raw);
         if (!dados.find(c => c.id === 3))
-          dados.push({ id: 3, nome: "PicPay 2", pct: 121, registros: [] });
-        return dados;
+          dados.push({ id: 3, nome: "PicPay 2", pct: 121, registros: [], ativo: true });
+        return dados.map(c => ({ ativo: true, historico: [], ...c }));
       }
     } catch(e) {}
     return [
-      { id: 1, nome: "Nubank 1", pct: 115, registros: [] },
-      { id: 2, nome: "Nubank 2", pct: 100, registros: [] },
-      { id: 3, nome: "PicPay 2", pct: 121, registros: [] },
+      { id: 1, nome: "Nubank 1", pct: 115, registros: [], ativo: true, historico: [] },
+      { id: 2, nome: "Nubank 2", pct: 100, registros: [], ativo: true, historico: [] },
+      { id: 3, nome: "PicPay 2", pct: 121, registros: [], ativo: true, historico: [] },
     ];
   }
 
@@ -169,6 +252,8 @@
   let caixinhas = carregarDados();
   let modalState = null;
   let mesAtual = new Date(); mesAtual.setDate(1);
+  // Controle de "ver mais" por caixinha
+  let expandido = {};
 
   function fBRL(v) { return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
   function fData(d) { return new Date(d+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"}); }
@@ -187,15 +272,23 @@
     return calcRendimentos(registros).filter(r => r.rendimento !== null).reduce((a,r) => a + r.rendimento, 0);
   }
 
-  // ── Gráfico ──────────────────────────────────────────────
-  function mudarMes(delta) {
-    mesAtual.setMonth(mesAtual.getMonth() + delta);
-    renderChart();
+  function rendimentoMes(registros) {
+    const agora = new Date();
+    const ano = agora.getFullYear(), mes = agora.getMonth();
+    const regs = calcRendimentos(registros).filter(r => {
+      if (!r.rendimento) return false;
+      const d = new Date(r.data+"T12:00:00");
+      return d.getFullYear() === ano && d.getMonth() === mes;
+    });
+    if (!regs.length) return null;
+    return regs.reduce((a,r) => a + r.rendimento, 0);
   }
 
+  // ── Gráfico ──────────────────────────────────────────────
+  function mudarMes(delta) { mesAtual.setMonth(mesAtual.getMonth() + delta); renderChart(); }
+
   function renderChart() {
-    const ano = mesAtual.getFullYear();
-    const mes = mesAtual.getMonth();
+    const ano = mesAtual.getFullYear(), mes = mesAtual.getMonth();
     document.getElementById("month-label").textContent = `${NOMES_MES[mes]} ${ano}`;
     const agora = new Date();
     const futuro = ano > agora.getFullYear() || (ano === agora.getFullYear() && mes > agora.getMonth());
@@ -205,141 +298,159 @@
     const canvas = document.getElementById("chart");
     const ctx = canvas.getContext("2d");
     const dpr = window.devicePixelRatio || 1;
-    const W = canvas.parentElement.clientWidth;
-    const H = 160;
-    canvas.width = W * dpr; canvas.height = H * dpr;
+    const W = canvas.parentElement.clientWidth, H = 160;
+    canvas.width = W*dpr; canvas.height = H*dpr;
     canvas.style.width = W+"px"; canvas.style.height = H+"px";
-    ctx.scale(dpr, dpr);
-    ctx.clearRect(0, 0, W, H);
+    ctx.scale(dpr, dpr); ctx.clearRect(0, 0, W, H);
 
-    // Dias do mês como eixo X, acumulando rendimentos dia a dia
     const diasNoMes = new Date(ano, mes+1, 0).getDate();
-
-    // Para cada caixinha, montar array de rendimento acumulado por dia
+    // Usar todas as caixinhas (incluindo inativas) para o gráfico
     const datasets = caixinhas.map(c => {
       const regs = calcRendimentos(c.registros).filter(r => {
         if (r.rendimento === null) return false;
         const d = new Date(r.data+"T12:00:00");
         return d.getFullYear() === ano && d.getMonth() === mes;
       });
-      // acumular por dia
       const acum = new Array(diasNoMes).fill(0);
       regs.forEach(r => {
-        const dia = new Date(r.data+"T12:00:00").getDate() - 1; // 0-indexed
+        const dia = new Date(r.data+"T12:00:00").getDate() - 1;
         for (let i = dia; i < diasNoMes; i++) acum[i] += r.rendimento;
       });
       return acum;
     });
 
     const temDados = datasets.some(d => d.some(v => v !== 0));
-
     if (!temDados) {
-      ctx.fillStyle = "#2a2a3a";
-      ctx.font = "12px DM Mono, monospace";
-      ctx.textAlign = "center";
+      ctx.fillStyle = "#2a2a3a"; ctx.font = "12px DM Mono, monospace"; ctx.textAlign = "center";
       ctx.fillText("Nenhum registro neste mês", W/2, H/2);
       document.getElementById("chart-legend").innerHTML = "";
       document.getElementById("chart-total").innerHTML = "";
       return;
     }
 
-    const padL = 54, padR = 12, padT = 10, padB = 28;
-    const cW = W - padL - padR, cH = H - padT - padB;
+    const padL=54, padR=12, padT=10, padB=28, cW=W-padL-padR, cH=H-padT-padB;
     const allVals = datasets.flatMap(d => d);
-    const maxVal = Math.max(...allVals, 0.01);
-    const minVal = Math.min(...allVals, 0);
+    const maxVal = Math.max(...allVals, 0.01), minVal = Math.min(...allVals, 0);
     const range = maxVal - minVal || 1;
+    function xP(i) { return padL + (i/(diasNoMes-1))*cW; }
+    function yP(v) { return padT + cH - ((v-minVal)/range)*cH; }
 
-    function xP(i) { return padL + (i / (diasNoMes-1)) * cW; }
-    function yP(v) { return padT + cH - ((v - minVal) / range) * cH; }
-
-    // Grid
     ctx.strokeStyle = "#1a1a26"; ctx.lineWidth = 1;
     [0,0.25,0.5,0.75,1].forEach(t => {
-      const y = padT + t * cH;
-      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W-padR, y); ctx.stroke();
+      const y = padT + t*cH;
+      ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
     });
-
-    // Linha zero
     if (minVal < 0) {
-      ctx.strokeStyle = "#2e2e3e"; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
-      ctx.beginPath(); ctx.moveTo(padL, yP(0)); ctx.lineTo(W-padR, yP(0)); ctx.stroke();
+      ctx.strokeStyle="#2e2e3e"; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(padL,yP(0)); ctx.lineTo(W-padR,yP(0)); ctx.stroke();
       ctx.setLineDash([]);
     }
 
-    // Linhas + área
     datasets.forEach((data, ci) => {
-      const cor = HEX[ci+1];
-      // Área
-      ctx.save(); ctx.globalAlpha = 0.08; ctx.fillStyle = cor;
-      ctx.beginPath(); ctx.moveTo(xP(0), yP(0));
-      data.forEach((v,i) => ctx.lineTo(xP(i), yP(v)));
-      ctx.lineTo(xP(diasNoMes-1), yP(0)); ctx.closePath(); ctx.fill(); ctx.restore();
-      // Linha
-      ctx.strokeStyle = cor; ctx.lineWidth = 2; ctx.lineJoin = "round";
+      const cor = getHex(caixinhas[ci].id);
+      ctx.save(); ctx.globalAlpha=0.08; ctx.fillStyle=cor;
+      ctx.beginPath(); ctx.moveTo(xP(0),yP(0));
+      data.forEach((v,i) => ctx.lineTo(xP(i),yP(v)));
+      ctx.lineTo(xP(diasNoMes-1),yP(0)); ctx.closePath(); ctx.fill(); ctx.restore();
+      ctx.strokeStyle=cor; ctx.lineWidth=2; ctx.lineJoin="round";
       ctx.beginPath();
-      data.forEach((v,i) => i === 0 ? ctx.moveTo(xP(i), yP(v)) : ctx.lineTo(xP(i), yP(v)));
+      data.forEach((v,i) => i===0 ? ctx.moveTo(xP(i),yP(v)) : ctx.lineTo(xP(i),yP(v)));
       ctx.stroke();
-      // Ponto final
-      const lastVal = data[diasNoMes-1];
-      if (lastVal !== 0) {
-        ctx.fillStyle = cor; ctx.beginPath();
-        ctx.arc(xP(diasNoMes-1), yP(lastVal), 4, 0, Math.PI*2); ctx.fill();
-      }
+      const lv = data[diasNoMes-1];
+      if (lv !== 0) { ctx.fillStyle=cor; ctx.beginPath(); ctx.arc(xP(diasNoMes-1),yP(lv),4,0,Math.PI*2); ctx.fill(); }
     });
 
-    // Eixo X — mostrar apenas dias 1, 8, 15, 22, último
-    ctx.fillStyle = "#555"; ctx.font = "10px DM Mono, monospace"; ctx.textAlign = "center";
-    [0,7,14,21,diasNoMes-1].forEach(i => {
-      if (i < diasNoMes) ctx.fillText(i+1, xP(i), H-6);
+    ctx.fillStyle="#555"; ctx.font="10px DM Mono, monospace"; ctx.textAlign="center";
+    [0,7,14,21,diasNoMes-1].forEach(i => { if(i<diasNoMes) ctx.fillText(i+1, xP(i), H-6); });
+    ctx.textAlign="right";
+    [0,0.5,1].forEach(t => {
+      const v = minVal + t*range;
+      ctx.fillText("R$"+(v>=0?"":"-")+Math.abs(v).toFixed(0), padL-4, yP(v)+4);
     });
 
-    // Eixo Y
-    ctx.textAlign = "right";
-    [0, 0.5, 1].forEach(t => {
-      const v = minVal + t * range;
-      ctx.fillText("R$"+(v >= 0 ? "" : "-")+Math.abs(v).toFixed(0), padL-4, yP(v)+4);
-    });
-
-    // Legenda
     document.getElementById("chart-legend").innerHTML = caixinhas.map((c,i) =>
-      `<div class="legend-item"><div class="legend-dot" style="background:${HEX[i+1]}"></div><span>${c.nome}</span></div>`
+      `<div class="legend-item"><div class="legend-dot" style="background:${getHex(c.id)}"></div><span>${c.nome}</span></div>`
     ).join("");
-
-    // Total
-    const totalMes = datasets.reduce((acc, d) => acc + d[diasNoMes-1], 0);
+    const totalMes = datasets.reduce((acc,d) => acc+d[diasNoMes-1], 0);
     document.getElementById("chart-total").innerHTML = temDados
-      ? `Total acumulado no mês: <span>${totalMes >= 0 ? "+" : ""}${fBRL(totalMes)}</span>` : "";
+      ? `Total acumulado no mês: <span>${totalMes>=0?"+":""}${fBRL(totalMes)}</span>` : "";
+  }
+
+  // ── Resumo geral ─────────────────────────────────────────
+  function renderSummary() {
+    const ativas = caixinhas.filter(c => c.ativo !== false);
+    const totalPatrimonio = ativas.reduce((acc, c) => {
+      const ultimo = c.registros[c.registros.length - 1];
+      return acc + (ultimo ? ultimo.saldo : 0);
+    }, 0);
+    const totalMes = ativas.reduce((acc, c) => {
+      const r = rendimentoMes(c.registros);
+      return acc + (r || 0);
+    }, 0);
+    const totalAcum = ativas.reduce((acc, c) => {
+      const r = totalRendimento(c.registros);
+      return acc + (r || 0);
+    }, 0);
+    const temDados = ativas.some(c => c.registros.length > 0);
+
+    document.getElementById("summary-grid").innerHTML = `
+      <div class="summary-item full">
+        <div>
+          <div class="summary-label">Patrimônio total</div>
+          <div class="summary-val">${temDados ? fBRL(totalPatrimonio) : "—"}</div>
+        </div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Rendimento do mês</div>
+        <div class="summary-val-sm" style="color:${totalMes>=0?'#00C896':'#ff6b6b'}">${temDados ? (totalMes>=0?"+":"") + fBRL(totalMes) : "—"}</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-label">Rendimento total</div>
+        <div class="summary-val-sm" style="color:${totalAcum>=0?'#7C6FFF':'#ff6b6b'}">${temDados ? (totalAcum>=0?"+":"") + fBRL(totalAcum) : "—"}</div>
+      </div>`;
   }
 
   // ── Cards ────────────────────────────────────────────────
   function render() {
     const container = document.getElementById("cards");
     container.innerHTML = "";
+    const ativas = caixinhas.filter(c => c.ativo !== false);
+    renderSummary();
 
-    caixinhas.forEach((c) => {
+    ativas.forEach((c) => {
+      const cor = getHex(c.id);
       const regs = calcRendimentos(c.registros);
       const totalRend = totalRendimento(c.registros);
+      const rendMes = rendimentoMes(c.registros);
       const ultimo = c.registros[c.registros.length-1];
       const saldoAtual = ultimo ? fBRL(ultimo.saldo) : "—";
+      const diasUltimo = diasDesdeUltimo(c.registros);
+
+      const rendMesHTML = rendMes !== null
+        ? `<span style="color:${rendMes>=0?'#00C896':'#ff6b6b'}">${rendMes>=0?"+":""}${fBRL(rendMes)}</span>`
+        : `<span style="color:#444">—</span>`;
       const rendTotalHTML = totalRend !== null
         ? `<span style="color:${totalRend>=0?'#00C896':'#ff6b6b'}">${totalRend>=0?"+":""}${fBRL(totalRend)}</span>`
         : `<span style="color:#444">—</span>`;
+
+      // Histórico: 7 mais recentes visíveis, restante oculto
+      const revsRegs = [...regs].reverse();
+      const visiveis = expandido[c.id] ? revsRegs : revsRegs.slice(0,7);
+      const temMais = revsRegs.length > 7;
 
       let hist = "";
       if (regs.length === 0) {
         hist = `<div class="empty">nenhum saldo registrado ainda</div>`;
       } else {
         hist = `<div class="table-wrap"><div class="table-head"><span>Data</span><span>Saldo</span><span>Moviment.</span><span>Rendeu</span><span></span></div>`;
-        [...regs].reverse().forEach(reg => {
-          const ent = reg.entrada||0, sai = reg.saida||0;
+        visiveis.forEach(reg => {
+          const ent=reg.entrada||0, sai=reg.saida||0;
           let mov = `<span class="mov-nenhum">—</span>`;
-          if (ent > 0) mov = `<span class="mov-entrada">+${fBRL(ent)}</span>`;
-          else if (sai > 0) mov = `<span class="mov-saida">-${fBRL(sai)}</span>`;
+          if (ent>0) mov=`<span class="mov-entrada">+${fBRL(ent)}</span>`;
+          else if (sai>0) mov=`<span class="mov-saida">-${fBRL(sai)}</span>`;
           let rend = `<span class="rend-null">—</span>`;
-          if (reg.rendimento !== null) {
-            rend = `<span class="${reg.rendimento>=0?'rend-pos':'rend-neg'}">${reg.rendimento>=0?"+":""}${fBRL(reg.rendimento)}</span>`;
-          }
+          if (reg.rendimento !== null)
+            rend=`<span class="${reg.rendimento>=0?'rend-pos':'rend-neg'}">${reg.rendimento>=0?"+":""}${fBRL(reg.rendimento)}</span>`;
           hist += `<div class="reg-row">
             <span class="reg-date">${fData(reg.data)}</span>
             <span class="reg-saldo">${fBRL(reg.saldo)}</span>
@@ -348,44 +459,94 @@
           </div>`;
         });
         hist += `</div>`;
+        if (temMais) {
+          if (!expandido[c.id]) {
+            hist += `<button class="ver-mais-btn" onclick="toggleExpandido(${c.id})">↓ ver mais (${revsRegs.length-7} registros anteriores)</button>`;
+          } else {
+            hist += `<button class="ver-mais-btn" onclick="toggleExpandido(${c.id})">↑ ocultar anteriores</button>`;
+          }
+        }
       }
 
-      container.innerHTML += `<div class="card card-${c.id}">
+      container.innerHTML += `<div class="card card-${c.id <= 3 ? c.id : 1}" style="border-color:${cor}25">
         <div class="card-head">
           <div class="card-title">
-            <div class="dot dot-${c.id}"></div>
+            <div class="dot" style="background:${cor};box-shadow:0 0 8px ${cor}"></div>
             <span class="nome">${c.nome}</span>
-            <span class="tag tag-${c.id}">${c.pct}% CDI</span>
+            <span class="tag" style="background:${cor}18;color:${cor}">${c.pct}% CDI</span>
           </div>
           <button class="edit-btn" onclick="abrirConfig(${c.id})">✎</button>
         </div>
         <div class="metrics">
           <div class="metric">
             <div class="metric-label">Saldo atual</div>
-            <div class="metric-val" style="color:${HEX[c.id]}">${saldoAtual}</div>
+            <div class="metric-val" style="color:${cor}">${saldoAtual}</div>
           </div>
           <div class="metric">
-            <div class="metric-label">Rendimento total</div>
-            <div class="metric-val">${rendTotalHTML}</div>
+            <div class="metric-label">Rendimento do mês</div>
+            <div class="metric-val">${rendMesHTML}</div>
           </div>
         </div>
+        <div class="metric-total">
+          <span class="metric-total-label">Rendimento total acumulado</span>
+          <span class="metric-total-val">${rendTotalHTML}</span>
+        </div>
+        ${diasUltimo ? `<div class="last-entry"><div class="last-entry-dot" style="background:${cor}"></div>último lançamento ${diasUltimo}</div>` : ""}
         ${hist}
-        <button class="add-btn add-${c.id}" style="margin-top:${regs.length>0?'14px':'4px'}" onclick="abrirSaldo(${c.id})">
-          + Registrar saldo
-        </button>
       </div>`;
     });
 
     renderChart();
   }
 
-  // ── Modais ───────────────────────────────────────────────
+  function toggleExpandido(id) {
+    expandido[id] = !expandido[id];
+    render();
+  }
+
+  // ── Modal gerenciar (botão único) ────────────────────────
+  function abrirGerenciar() {
+    modalState = { tipo: "gerenciar" };
+    document.getElementById("modal-title").textContent = "Registrar saldo";
+    document.getElementById("modal-sub").textContent = "Escolha a caixinha";
+    document.getElementById("modal-btns").style.display = "none";
+    renderGerenciarBody();
+    document.getElementById("overlay").classList.add("open");
+  }
+
+  function renderGerenciarBody() {
+    const ativas = caixinhas.filter(c => c.ativo !== false);
+    document.getElementById("modal-body").innerHTML = `
+      <div class="cx-list">
+        ${ativas.map(c => {
+          const cor = getHex(c.id);
+          return `<div class="cx-item" onclick="abrirSaldo(${c.id})">
+            <div class="cx-item-left">
+              <div style="width:8px;height:8px;border-radius:50%;background:${cor};flex-shrink:0"></div>
+              <span class="cx-item-name">${c.nome}</span>
+              <span class="cx-item-tag" style="background:${cor}18;color:${cor}">${c.pct}% CDI</span>
+            </div>
+            <div class="cx-actions" onclick="event.stopPropagation()">
+              <button class="cx-edit-btn" onclick="abrirConfig(${c.id})">✎</button>
+              <button class="cx-del-btn" onclick="excluirCaixinha(${c.id})">excluir</button>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+      <button class="new-cx-btn" onclick="abrirNovaCaixinha()">+ Nova caixinha</button>`;
+  }
+
   function abrirSaldo(id) {
     const c = caixinhas.find(x => x.id === id);
+    const cor = getHex(id);
     modalState = { tipo: "saldo", id };
     document.getElementById("modal-title").textContent = "Registrar saldo";
     document.getElementById("modal-sub").textContent = c.nome;
+    document.getElementById("modal-btns").style.display = "flex";
+    document.getElementById("confirm-btn").textContent = "Salvar";
+    document.getElementById("confirm-btn").className = "confirm-btn confirm-green";
     document.getElementById("modal-body").innerHTML = `
+      <button class="modal-back-btn" onclick="abrirGerenciar()">← voltar</button>
       <div class="field"><label>Saldo atual (R$)</label>
         <input type="number" inputmode="decimal" id="input-saldo" placeholder="0,00" /></div>
       <div class="field"><label>Data</label>
@@ -404,9 +565,6 @@
           <div class="field-hint">Dinheiro que você tirou</div>
         </div>
       </div>`;
-    document.getElementById("confirm-btn").textContent = "Salvar";
-    document.getElementById("confirm-btn").className = "confirm-btn confirm-green";
-    document.getElementById("overlay").classList.add("open");
     setTimeout(() => document.getElementById("input-saldo").focus(), 100);
   }
 
@@ -415,18 +573,49 @@
     modalState = { tipo: "config", id };
     document.getElementById("modal-title").textContent = "Configurar caixinha";
     document.getElementById("modal-sub").textContent = "";
+    document.getElementById("modal-btns").style.display = "flex";
+    document.getElementById("confirm-btn").textContent = "Salvar";
+    document.getElementById("confirm-btn").className = "confirm-btn confirm-purple";
     document.getElementById("modal-body").innerHTML = `
+      <button class="modal-back-btn" onclick="abrirGerenciar()">← voltar</button>
       <div class="field"><label>Nome</label>
         <input type="text" id="input-nome" value="${c.nome}" /></div>
       <div class="field"><label>% do CDI</label>
         <input type="number" inputmode="decimal" id="input-pct" value="${c.pct}" placeholder="ex: 121" /></div>`;
-    document.getElementById("confirm-btn").textContent = "Salvar";
-    document.getElementById("confirm-btn").className = "confirm-btn confirm-purple";
-    document.getElementById("overlay").classList.add("open");
     setTimeout(() => document.getElementById("input-nome").focus(), 100);
   }
 
-  function closeModal() { document.getElementById("overlay").classList.remove("open"); modalState = null; }
+  function abrirNovaCaixinha() {
+    modalState = { tipo: "nova" };
+    document.getElementById("modal-title").textContent = "Nova caixinha";
+    document.getElementById("modal-sub").textContent = "";
+    document.getElementById("modal-btns").style.display = "flex";
+    document.getElementById("confirm-btn").textContent = "Criar";
+    document.getElementById("confirm-btn").className = "confirm-btn confirm-green";
+    document.getElementById("modal-body").innerHTML = `
+      <button class="modal-back-btn" onclick="abrirGerenciar()">← voltar</button>
+      <div class="field"><label>Nome</label>
+        <input type="text" id="input-nome" placeholder="ex: PicPay 3" /></div>
+      <div class="field"><label>% do CDI</label>
+        <input type="number" inputmode="decimal" id="input-pct" placeholder="ex: 121" /></div>`;
+    setTimeout(() => document.getElementById("input-nome").focus(), 100);
+  }
+
+  function excluirCaixinha(id) {
+    const c = caixinhas.find(x => x.id === id);
+    if (!confirm(`Excluir "${c.nome}"? Os dados sumirão do card mas ficam no gráfico.`)) return;
+    // Marca como inativa mas mantém os registros para o gráfico
+    caixinhas = caixinhas.map(cx => cx.id === id ? { ...cx, ativo: false } : cx);
+    salvarDados();
+    renderGerenciarBody();
+    render();
+  }
+
+  function closeModal() {
+    document.getElementById("overlay").classList.remove("open");
+    document.getElementById("modal-btns").style.display = "flex";
+    modalState = null;
+  }
   function fecharModal(e) { if (e.target === document.getElementById("overlay")) closeModal(); }
 
   function confirmar() {
@@ -434,8 +623,8 @@
     if (modalState.tipo === "saldo") {
       const saldo = parseFloat(document.getElementById("input-saldo").value);
       const data = document.getElementById("input-data").value;
-      const entrada = parseFloat(document.getElementById("input-entrada").value) || 0;
-      const saida = parseFloat(document.getElementById("input-saida").value) || 0;
+      const entrada = parseFloat(document.getElementById("input-entrada").value)||0;
+      const saida = parseFloat(document.getElementById("input-saida").value)||0;
       if (!saldo || saldo <= 0) { document.getElementById("input-saldo").focus(); return; }
       caixinhas = caixinhas.map(c => {
         if (c.id !== modalState.id) return c;
@@ -443,13 +632,20 @@
         novos.sort((a,b) => a.data.localeCompare(b.data));
         return { ...c, registros: novos };
       });
-    } else {
+    } else if (modalState.tipo === "config") {
       const nome = document.getElementById("input-nome").value.trim();
       const pct = parseFloat(document.getElementById("input-pct").value);
       caixinhas = caixinhas.map(c =>
         c.id === modalState.id ? { ...c, nome: nome||c.nome, pct: pct||c.pct } : c);
+    } else if (modalState.tipo === "nova") {
+      const nome = document.getElementById("input-nome").value.trim();
+      const pct = parseFloat(document.getElementById("input-pct").value);
+      if (!nome || !pct) return;
+      const newId = Math.max(...caixinhas.map(c => c.id)) + 1;
+      caixinhas.push({ id: newId, nome, pct, registros: [], ativo: true, historico: [] });
     }
     salvarDados(); closeModal(); render();
+    showToast("✓ Salvo com sucesso!");
   }
 
   function remover(caixinhaId, regId) {
@@ -483,7 +679,7 @@
   }
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && modalState) confirmar();
+    if (e.key === "Enter" && modalState && modalState.tipo !== "gerenciar") confirmar();
     if (e.key === "Escape") closeModal();
   });
 
