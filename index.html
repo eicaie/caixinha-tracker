@@ -15,18 +15,18 @@
   --glass:rgba(255,255,255,0.04);--glass2:rgba(255,255,255,0.07);--glass3:rgba(255,255,255,0.11);
   --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--border3:rgba(255,255,255,0.22);
   --text:#EEF3FF;--text2:#7A96BE;--text3:#344D68;
-  --green:#00D68F;--red:#FF3B55;--orange:#FF9F0A;--purple:#BF5AF2;--blue:#0A84FF;
+  --green:#30D158;--red:#FF3B30;--orange:#FF9500;--purple:#BF5AF2;--blue:#0A84FF;
   --tab-h:80px;
   --safe-top:env(safe-area-inset-top,44px);
-  --safe-bot:env(safe-area-inset-bottom,20px);
+  --safe-bot:env(safe-area-inset-bottom,0px);
 }
-html,body{height:100%;-webkit-font-smoothing:antialiased;}
+html{-webkit-font-smoothing:antialiased;}
 body{
   background:var(--bg);color:var(--text);
   font-family:'DM Sans',system-ui,-apple-system,sans-serif;
-  /* FIX: padding correto para tab bar + safe area */
-  padding-bottom:calc(var(--tab-h) + var(--safe-bot) + 24px);
-  overflow-x:hidden;min-height:100vh;
+  /* scroll fix: valor fixo generoso, cobre tab bar + safe area em qualquer device */
+  padding-bottom:160px;
+  overflow-x:hidden;
 }
 
 .orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(90px);}
@@ -135,7 +135,6 @@ body{
 .cx-r-del:active{color:var(--red);}
 .cx-empty{text-align:center;font-size:12px;color:var(--text3);padding:20px 0;}
 .ver-mais{width:100%;background:none;border:0.5px solid var(--border);border-radius:10px;padding:8px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;margin:5px 0;}
-/* FIX: footer do card sempre visível */
 .cx-footer{display:flex;gap:6px;padding:10px 14px 14px;border-top:0.5px solid var(--border);}
 .cx-btn-e{flex:1;background:var(--glass);border:0.5px solid var(--border2);border-radius:12px;padding:11px 10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;text-align:center;}
 .cx-btn-r{flex:2;background:rgba(10,132,255,0.15);color:var(--blue);border:0.5px solid rgba(10,132,255,0.28);border-radius:12px;padding:11px 10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;text-align:center;}
@@ -148,10 +147,9 @@ body{
 .data-row:active{background:rgba(255,255,255,0.03);}
 .data-row-l{display:flex;align-items:center;gap:12px;}
 .data-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.ico-g{background:rgba(0,214,143,0.12);}
+.ico-g{background:rgba(48,209,88,0.12);}
 .ico-p{background:rgba(191,90,242,0.12);}
 .ico-b{background:rgba(10,132,255,0.12);}
-.ico-o{background:rgba(255,159,10,0.12);}
 .data-row-title{font-size:15px;font-weight:600;}
 .data-row-sub{font-size:12px;color:var(--text3);margin-top:1px;}
 .data-row-chev{color:var(--text3);font-size:20px;}
@@ -160,7 +158,7 @@ body{
 .stat-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:4px;}
 .stat-val{font-size:14px;font-weight:700;}
 
-/* ── Tab bar ── */
+/* Tab bar */
 .tab-bar{
   position:fixed;bottom:0;left:0;right:0;
   height:calc(var(--tab-h) + var(--safe-bot));
@@ -172,10 +170,7 @@ body{
 }
 .tab-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;width:76px;padding:2px 0;transition:opacity .15s;}
 .tab-item:active{opacity:.45;}
-.tab-icon-wrap{
-  width:38px;height:26px;display:flex;align-items:center;justify-content:center;
-  border-radius:13px;transition:background .2s;
-}
+.tab-icon-wrap{width:38px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:13px;transition:background .2s;}
 .tab-item.on .tab-icon-wrap{background:rgba(10,132,255,0.15);}
 .tab-svg{width:22px;height:22px;}
 .tab-label{font-size:10px;font-weight:600;letter-spacing:.02em;}
@@ -243,10 +238,7 @@ body{
 
 /* Mode selector */
 .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;}
-.mode-btn{
-  background:var(--bg3);border:0.5px solid var(--border2);border-radius:16px;
-  padding:13px 10px;text-align:center;cursor:pointer;transition:all .15s;
-}
+.mode-btn{background:var(--bg3);border:0.5px solid var(--border2);border-radius:16px;padding:13px 10px;text-align:center;cursor:pointer;transition:all .15s;}
 .mode-btn:active{opacity:.7;}
 .mode-btn.on{border-color:var(--blue);background:rgba(10,132,255,0.1);}
 .mode-btn .m-ico{font-size:20px;margin-bottom:6px;}
@@ -254,7 +246,7 @@ body{
 .mode-btn .m-sub{font-size:10px;color:var(--text3);line-height:1.4;}
 .mode-btn.on .m-title{color:var(--blue);}
 
-/* cx list */
+/* cx list in modal */
 .cx-list{display:flex;flex-direction:column;gap:7px;margin-bottom:10px;}
 .cx-li{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--bg3);border-radius:14px;cursor:pointer;border:0.5px solid var(--border2);}
 .cx-li:active{opacity:.7;}
@@ -262,14 +254,22 @@ body{
 .cx-li-name{font-size:14px;font-weight:600;}
 .cx-li-actions{display:flex;gap:5px;}
 .cla-btn{border:none;border-radius:8px;padding:5px 9px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;}
-.cla-del{background:rgba(255,59,85,0.1);color:var(--red);}
+.cla-del{background:rgba(255,59,48,0.1);color:var(--red);}
 .cla-edit{background:var(--bg4);color:var(--text2);}
 .new-cx-btn{width:100%;background:none;border:0.5px dashed var(--border2);border-radius:14px;padding:13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text3);cursor:pointer;margin-top:4px;}
 
-/* palette — 24 cores, sem repetição */
+/* Palette — 10 cores maximamente distintas */
 .palette{display:flex;flex-wrap:wrap;gap:8px;}
-.sw{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;}
+.sw{width:32px;height:32px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;position:relative;}
 .sw.on{border-color:#fff;transform:scale(1.18);}
+/* Label da cor ao passar o mouse — acessibilidade */
+.sw::after{
+  content:attr(data-label);
+  position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+  font-size:9px;font-weight:600;color:var(--text3);white-space:nowrap;
+  opacity:0;transition:opacity .15s;pointer-events:none;
+}
+.sw:hover::after{opacity:1;}
 
 .hval{color:var(--text3);letter-spacing:.18em;font-size:.8em;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -341,7 +341,6 @@ body{
 <div class="tab-bar">
   <div class="tab-item on" id="tab-home" onclick="navTo('home')">
     <div class="tab-icon-wrap">
-      <!-- ícone carteira/wallet SVG outline -->
       <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="3"/>
         <path d="M16 11.5a1.5 1.5 0 0 0 0 3h3v-3h-3z"/>
@@ -353,7 +352,6 @@ body{
   <div class="tab-center" onclick="abrirRegistrar()">＋</div>
   <div class="tab-item" id="tab-dados" onclick="navTo('dados')">
     <div class="tab-icon-wrap">
-      <!-- ícone dados/sliders SVG outline -->
       <svg class="tab-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
         <line x1="4" y1="6" x2="20" y2="6"/>
         <line x1="4" y1="12" x2="20" y2="12"/>
@@ -385,13 +383,25 @@ body{
 var SK="caixinha_ios_v1";
 var MESES=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
-/* 24 cores distintas, sem repetição */
+/*
+  10 cores maximamente distintas no fundo escuro #060B14.
+  Diferença perceptual mínima entre quaisquer duas: ≥100 (soma RGB absoluta).
+  Identidade mental de cada uma:
+    Azul · Verde · Laranja · Roxo · Vermelho · Índigo · Teal · Verde-lima · Rosa · Cobre
+*/
 var PALETTE=[
-  "#0A84FF","#30D158","#BF5AF2","#FF9F0A","#FF453A","#64D2FF",
-  "#FFD60A","#FF6961","#34C759","#AF52DE","#FF2D55","#5AC8FA",
-  "#FF6B35","#00C7BE","#32ADE6","#FF3B30","#6AC4DC","#FFC100",
-  "#A2845E","#6E6E73","#1DB954","#E040FB","#F4511E","#039BE5"
+  "#0A84FF",  // Azul
+  "#30D158",  // Verde
+  "#FF9500",  // Laranja
+  "#BF5AF2",  // Roxo
+  "#FF3B30",  // Vermelho
+  "#5E5CE6",  // Índigo
+  "#00C7BE",  // Teal
+  "#85C100",  // Verde-lima
+  "#FF69B4",  // Rosa
+  "#AC8E68"   // Cobre
 ];
+var PAL_LABELS=["Azul","Verde","Laranja","Roxo","Vermelho","Índigo","Teal","Lima","Rosa","Cobre"];
 
 var BACKUP=[
   {"id":1,"nome":"Nubank Caixinha Turbo","pct":115,"cor":"#0A84FF","ativo":true,"registros":[{"id":1776213601724,"data":"2026-04-01","saldo":1792.81,"entrada":0,"saida":0},{"id":1776213631575,"data":"2026-04-02","saldo":1793.12,"entrada":0,"saida":0},{"id":1776213666466,"data":"2026-04-03","saldo":1793.47,"entrada":0,"saida":0},{"id":1776213889902,"data":"2026-04-06","saldo":1563.98,"entrada":0,"saida":231.46},{"id":1776213937317,"data":"2026-04-07","saldo":1564.45,"entrada":0,"saida":0},{"id":1776213956662,"data":"2026-04-08","saldo":1564.97,"entrada":0,"saida":0},{"id":1776214011303,"data":"2026-04-09","saldo":1565.52,"entrada":0,"saida":0},{"id":1776214200129,"data":"2026-04-10","saldo":1318.45,"entrada":0,"saida":250.92},{"id":1776205604232,"data":"2026-04-14","saldo":1319.17,"entrada":0,"saida":0},{"id":1776251338260,"data":"2026-04-15","saldo":1320.11,"entrada":0,"saida":0},{"id":1776340518459,"data":"2026-04-16","saldo":1320.93,"entrada":0,"saida":0},{"id":1776430678718,"data":"2026-04-17","saldo":1321.75,"entrada":0,"saida":0},{"id":1776571494780,"data":"2026-04-19","saldo":1191.46,"entrada":0,"saida":130.64},{"id":1776775726083,"data":"2026-04-21","saldo":1192.21,"entrada":0,"saida":0},{"id":1776893098326,"data":"2026-04-22","saldo":652.36,"entrada":0,"saida":538.35},{"id":1776942086870,"data":"2026-04-23","saldo":602.2,"entrada":0,"saida":50},{"id":1776960072783,"data":"2026-04-23","saldo":602.58,"entrada":0,"saida":0},{"id":1777032929851,"data":"2026-04-24","saldo":602.95,"entrada":0,"saida":0},{"id":1777119882295,"data":"2026-04-25","saldo":603.33,"entrada":0,"saida":0},{"id":1777374684857,"data":"2026-04-28","saldo":603.7,"entrada":0,"saida":0},{"id":1777465677094,"data":"2026-04-29","saldo":4800,"entrada":4195.92,"saida":0},{"id":1777547911256,"data":"2026-04-30","saldo":4803,"entrada":0,"saida":0},{"id":1777641475136,"data":"2026-05-01","saldo":4805.95,"entrada":0,"saida":0},{"id":1777994359011,"data":"2026-05-04","saldo":1756.93,"entrada":0,"saida":3045.72},{"id":1777980305377,"data":"2026-05-05","saldo":1758.01,"entrada":0,"saida":0},{"id":1778065885895,"data":"2026-05-06","saldo":1628.8,"entrada":0,"saida":130},{"id":1778156249470,"data":"2026-05-07","saldo":1629.8,"entrada":0,"saida":0},{"id":1778239230258,"data":"2026-05-08","saldo":1630.81,"entrada":0,"saida":0},{"id":1778469417697,"data":"2026-05-11","saldo":1376.12,"entrada":0,"saida":254.8},{"id":1778588367749,"data":"2026-05-12","saldo":1376.96,"entrada":0,"saida":0},{"id":1778673361740,"data":"2026-05-13","saldo":1377.81,"entrada":0,"saida":0},{"id":1778758467328,"data":"2026-05-14","saldo":1378.66,"entrada":0,"saida":0},{"id":1778865036983,"data":"2026-05-15","saldo":1228.91,"entrada":0,"saida":150},{"id":1778935807698,"data":"2026-05-16","saldo":1229.66,"entrada":0,"saida":0},{"id":1779189606855,"data":"2026-05-19","saldo":1230.42,"entrada":0,"saida":0},{"id":1779274025550,"data":"2026-05-20","saldo":1231.17,"entrada":0,"saida":0},{"id":1779361654249,"data":"2026-05-21","saldo":1231.94,"entrada":0,"saida":0},{"id":1779448041187,"data":"2026-05-22","saldo":1232.69,"entrada":0,"saida":0},{"id":1779542161334,"data":"2026-05-23","saldo":1233.44,"entrada":0,"saida":0}]},
@@ -551,7 +561,7 @@ function renderMonthSummary(){
   if(!rows.length){document.getElementById("month-summary").innerHTML='<div style="text-align:center;color:var(--text3);padding:20px;font-size:12px">Sem lançamentos em '+MESES[mes]+" "+ano+'</div>';return;}
   var rc=totalRend>=0?"var(--green)":"var(--red)";
   var rs=(totalRend>=0?"+":"")+fBRL(parseFloat(totalRend.toFixed(2)));
-  var badgeStyle=totalRend>=0?"background:rgba(0,214,143,0.1);color:var(--green);border:0.5px solid rgba(0,214,143,0.2)":"background:rgba(255,59,85,0.1);color:var(--red);border:0.5px solid rgba(255,59,85,0.2)";
+  var badgeStyle=totalRend>=0?"background:rgba(48,209,88,0.1);color:var(--green);border:0.5px solid rgba(48,209,88,0.2)":"background:rgba(255,59,48,0.1);color:var(--red);border:0.5px solid rgba(255,59,48,0.2)";
   var html='<div class="ms-head"><div><div class="ms-total" style="color:'+rc+'">'+hv(rs)+'</div><div class="ms-sub">'+MESES[mes]+" "+ano+(totalDep>0?" · dep. "+fBRL(parseFloat(totalDep.toFixed(2))):"")+(totalRet>0?" · ret. "+fBRL(parseFloat(totalRet.toFixed(2))):"")+'</div></div>'+
     '<div class="ms-badge" style="'+badgeStyle+'">'+(totalRend>=0?"↑ ":"↓ ")+hv(fBRL(Math.abs(parseFloat(totalRend.toFixed(2)))))+'</div></div><div class="ms-rows">';
   rows.forEach(function(row){
@@ -614,7 +624,6 @@ function renderCards(){
       '</div>'+
       '<div class="cx-footer">'+
         '<button class="cx-btn-e" onclick="abrirConfig('+c.id+')">✎ Editar</button>'+
-        /* FIX: onclick correto passando o id */
         '<button class="cx-btn-r" onclick="abrirSaldoDireto('+c.id+')">+ Registrar saldo</button>'+
       '</div></div>';
   });
@@ -623,8 +632,8 @@ function renderCards(){
 function exp(id){expandido[id]=!expandido[id];renderCards();}
 
 function renderDados(){
-  var ativas=cx.filter(function(c){return c.ativo!==false;});
-  document.getElementById("stats-sub").textContent=cx.length+" caixinhas · "+cx.reduce(function(a,c){return a+c.registros.length;},0)+" registros";
+  var total=cx.reduce(function(a,c){return a+c.registros.length;},0);
+  document.getElementById("stats-sub").textContent=cx.length+" caixinhas · "+total+" registros";
   var html="";
   cx.forEach(function(c){
     var cor=getHex(c);var inativa=c.ativo===false;
@@ -636,7 +645,7 @@ function renderDados(){
       '</div>'+
       '<div style="display:flex;gap:5px">'+
         '<button class="cla-btn cla-edit" onclick="abrirConfig('+c.id+')">✎</button>'+
-        (inativa?'<button class="cla-btn" style="background:rgba(52,199,89,0.1);color:var(--green)" onclick="reativar('+c.id+')">reativar</button>':'<button class="cla-btn cla-del" onclick="excluir('+c.id+')">excluir</button>')+
+        (inativa?'<button class="cla-btn" style="background:rgba(48,209,88,0.1);color:var(--green)" onclick="reativar('+c.id+')">reativar</button>':'<button class="cla-btn cla-del" onclick="excluir('+c.id+')">excluir</button>')+
       '</div></div>';
   });
   html+='<button class="new-cx-btn" style="margin-top:8px" onclick="abrirNovaCaixinha()">+ Nova caixinha</button>';
@@ -662,13 +671,11 @@ function toggleStats(){
 }
 function skv(l,v,cor){return '<div class="stat-box"><div class="stat-lbl">'+l+'</div><div class="stat-val" style="color:'+cor+'">'+v+'</div></div>';}
 
-/* ── Modal helpers ── */
-function iSt(){return 'background:var(--bg3);border:0.5px solid rgba(255,255,255,0.1);border-radius:14px;color:var(--text);font-family:\'DM Sans\',sans-serif;font-size:16px;padding:14px;width:100%;outline:none;';}
+/* ── Modais ── */
 function openOverlay(){document.getElementById("overlay").classList.add("open");}
 function closeModal(){document.getElementById("overlay").classList.remove("open");document.getElementById("s-btns").style.display="flex";modalState=null;corTemp=null;}
 function fecharModalBg(e){if(e.target===document.getElementById("overlay"))closeModal();}
 
-/* ── Registrar — escolher caixinha ── */
 function abrirRegistrar(){
   modalState={tipo:"lista"};
   document.getElementById("s-title").textContent="Registrar";
@@ -689,10 +696,9 @@ function abrirRegistrar(){
   openOverlay();
 }
 
-/* FIX: botão do card abre diretamente no modo completo */
 function abrirSaldoDireto(id){
   var c=cx.find(function(x){return x.id===id;});
-  modalState={tipo:"saldo",id:id};
+  modalState={tipo:"saldo",id:id,modo:"completo"};
   document.getElementById("s-title").textContent="Registrar saldo";
   document.getElementById("s-sub").textContent=c.nome;
   document.getElementById("s-btns").style.display="flex";
@@ -703,7 +709,6 @@ function abrirSaldoDireto(id){
   setTimeout(function(){var e=document.getElementById("i-saldo");if(e)e.focus();},150);
 }
 
-/* ── Escolher modo de registro ── */
 function abrirModos(id){
   var c=cx.find(function(x){return x.id===id;});
   modalState={tipo:"modos",id:id};
@@ -713,26 +718,10 @@ function abrirModos(id){
   document.getElementById("s-body").innerHTML=
     '<button class="back-btn" onclick="abrirRegistrar()">← voltar</button>'+
     '<div class="mode-grid">'+
-      '<div class="mode-btn on" onclick="escolherModo('+id+',\'completo\')">'+
-        '<div class="m-ico">📊</div>'+
-        '<div class="m-title">Saldo completo</div>'+
-        '<div class="m-sub">Informe o saldo atual e opcionalmente movimentações</div>'+
-      '</div>'+
-      '<div class="mode-btn" onclick="escolherModo('+id+',\'rendimento\')">'+
-        '<div class="m-ico">✨</div>'+
-        '<div class="m-title">Só rendimento</div>'+
-        '<div class="m-sub">Informe quanto rendeu hoje sem precisar do saldo total</div>'+
-      '</div>'+
-      '<div class="mode-btn" onclick="escolherModo('+id+',\'deposito\')">'+
-        '<div class="m-ico">📥</div>'+
-        '<div class="m-title">Depósito</div>'+
-        '<div class="m-sub">Registrar que você colocou dinheiro nesta caixinha</div>'+
-      '</div>'+
-      '<div class="mode-btn" onclick="escolherModo('+id+',\'retirada\')">'+
-        '<div class="m-ico">📤</div>'+
-        '<div class="m-title">Retirada</div>'+
-        '<div class="m-sub">Registrar que você retirou dinheiro desta caixinha</div>'+
-      '</div>'+
+      '<div class="mode-btn on" onclick="escolherModo('+id+',\'completo\')"><div class="m-ico">📊</div><div class="m-title">Saldo completo</div><div class="m-sub">Informe o saldo atual e movimentações</div></div>'+
+      '<div class="mode-btn" onclick="escolherModo('+id+',\'rendimento\')"><div class="m-ico">✨</div><div class="m-title">Só rendimento</div><div class="m-sub">Informe quanto rendeu sem o saldo total</div></div>'+
+      '<div class="mode-btn" onclick="escolherModo('+id+',\'deposito\')"><div class="m-ico">📥</div><div class="m-title">Depósito</div><div class="m-sub">Colocou dinheiro nesta caixinha</div></div>'+
+      '<div class="mode-btn" onclick="escolherModo('+id+',\'retirada\')"><div class="m-ico">📤</div><div class="m-title">Retirada</div><div class="m-sub">Retirou dinheiro desta caixinha</div></div>'+
     '</div>';
 }
 
@@ -745,9 +734,7 @@ function escolherModo(id,modo){
   document.getElementById("s-btns").style.display="flex";
   document.getElementById("s-confirm").textContent="Salvar";
   document.getElementById("s-confirm").className="btn-ok btn-blue";
-  document.getElementById("s-body").innerHTML=
-    '<button class="back-btn" onclick="abrirModos('+id+')">← voltar</button>'+
-    buildFormPorModo(id,modo);
+  document.getElementById("s-body").innerHTML='<button class="back-btn" onclick="abrirModos('+id+')">← voltar</button>'+buildFormPorModo(id,modo);
   setTimeout(function(){var e=document.querySelector("#s-body input[type=number]");if(e)e.focus();},150);
 }
 
@@ -764,23 +751,22 @@ function buildSaldoForm(id,comBack){
 function buildFormPorModo(id,modo){
   if(modo==="completo")return buildSaldoForm(id,false);
   if(modo==="rendimento"){
-    return '<div class="field"><label>Rendimento (R$)</label><input type="number" inputmode="decimal" id="i-rend" placeholder="ex: 2,50"/><div class="field-hint">O saldo será calculado somando ao último registro</div></div>'+
+    return '<div class="field"><label>Rendimento (R$)</label><input type="number" inputmode="decimal" id="i-rend" placeholder="ex: 2,50"/><div class="field-hint">Saldo = último registro + rendimento</div></div>'+
       '<div class="field"><label>Data</label><input type="date" id="i-data" value="'+hoje()+'"/></div>';
   }
   if(modo==="deposito"){
     return '<div class="field"><label>Novo saldo após depósito (R$)</label><input type="number" inputmode="decimal" id="i-saldo" placeholder="0,00"/></div>'+
-      '<div class="field"><label>Valor depositado (R$)</label><input type="number" inputmode="decimal" id="i-ent" placeholder="0,00"/><div class="field-hint">Quanto você colocou nesta caixinha</div></div>'+
+      '<div class="field"><label>Valor depositado (R$)</label><input type="number" inputmode="decimal" id="i-ent" placeholder="0,00"/></div>'+
       '<div class="field"><label>Data</label><input type="date" id="i-data" value="'+hoje()+'"/></div>';
   }
   if(modo==="retirada"){
     return '<div class="field"><label>Novo saldo após retirada (R$)</label><input type="number" inputmode="decimal" id="i-saldo" placeholder="0,00"/></div>'+
-      '<div class="field"><label>Valor retirado (R$)</label><input type="number" inputmode="decimal" id="i-sai" placeholder="0,00"/><div class="field-hint">Quanto você retirou desta caixinha</div></div>'+
+      '<div class="field"><label>Valor retirado (R$)</label><input type="number" inputmode="decimal" id="i-sai" placeholder="0,00"/></div>'+
       '<div class="field"><label>Data</label><input type="date" id="i-data" value="'+hoje()+'"/></div>';
   }
   return buildSaldoForm(id,false);
 }
 
-/* ── Confirmar ── */
 function confirmar(){
   if(!modalState)return;
   if(modalState.tipo==="saldo"){
@@ -788,11 +774,9 @@ function confirmar(){
     var data=(document.getElementById("i-data")||{}).value||hoje();
     var entrada=parseFloat((document.getElementById("i-ent")||{}).value)||0;
     var saida=parseFloat((document.getElementById("i-sai")||{}).value)||0;
-
     if(modo==="rendimento"){
       var rendVal=parseFloat((document.getElementById("i-rend")||{}).value);
       if(!rendVal){var e2=document.getElementById("i-rend");if(e2)e2.focus();return;}
-      /* Calcular novo saldo = último saldo + rendimento */
       cx=cx.map(function(c){
         if(c.id!==modalState.id)return c;
         var ult=c.registros[c.registros.length-1];
@@ -827,8 +811,8 @@ function confirmar(){
 }
 
 function swatches(ca){
-  return PALETTE.map(function(cor){
-    return '<div class="sw'+(cor===ca?" on":"")+'" style="background:'+cor+'" onclick="selecionarCor(\''+cor+'\',event)"></div>';
+  return PALETTE.map(function(cor,i){
+    return '<div class="sw'+(cor===ca?" on":"")+'" style="background:'+cor+'" data-label="'+PAL_LABELS[i]+'" title="'+PAL_LABELS[i]+'" onclick="selecionarCor(\''+cor+'\',event)"></div>';
   }).join("");
 }
 function selecionarCor(cor,ev){
@@ -849,7 +833,7 @@ function abrirConfig(id){
   document.getElementById("s-body").innerHTML=
     '<div class="field"><label>Nome</label><input type="text" id="i-nome" value="'+c.nome+'"/></div>'+
     '<div class="field"><label>% do CDI</label><input type="number" inputmode="decimal" id="i-pct" value="'+c.pct+'"/></div>'+
-    '<div class="field"><label>Cor — '+PALETTE.length+' opções</label><div class="palette">'+swatches(corTemp)+'</div></div>';
+    '<div class="field"><label>Cor</label><div class="palette" style="margin-bottom:20px">'+swatches(corTemp)+'</div></div>';
   setTimeout(function(){var e=document.getElementById("i-nome");if(e)e.focus();},100);
   openOverlay();
 }
@@ -864,7 +848,7 @@ function abrirNovaCaixinha(){
   document.getElementById("s-body").innerHTML=
     '<div class="field"><label>Nome</label><input type="text" id="i-nome" placeholder="ex: Nubank Turbo"/></div>'+
     '<div class="field"><label>% do CDI</label><input type="number" inputmode="decimal" id="i-pct" placeholder="ex: 121"/></div>'+
-    '<div class="field"><label>Cor — '+PALETTE.length+' opções</label><div class="palette">'+swatches(corTemp)+'</div></div>';
+    '<div class="field"><label>Cor</label><div class="palette" style="margin-bottom:20px">'+swatches(corTemp)+'</div></div>';
   setTimeout(function(){var e=document.getElementById("i-nome");if(e)e.focus();},100);
   openOverlay();
 }
@@ -912,7 +896,7 @@ document.addEventListener("keydown",function(e){
 
 window.onerror=function(msg,src,line,col,err){
   var d=document.createElement("div");
-  d.style.cssText="position:fixed;top:60px;left:16px;right:16px;background:#1a0808;border:1px solid #ff3b55;border-radius:12px;padding:12px;font-size:11px;color:#ff3b55;z-index:9999;word-break:break-all;";
+  d.style.cssText="position:fixed;top:60px;left:16px;right:16px;background:#1a0808;border:1px solid #ff3b30;border-radius:12px;padding:12px;font-size:11px;color:#ff3b30;z-index:9999;word-break:break-all;";
   d.textContent="Erro: "+(err?err.message:msg);
   document.body.appendChild(d);setTimeout(function(){d.remove();},8000);
   return false;
