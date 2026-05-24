@@ -14,7 +14,6 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
   --bg:#060B14;
-  --bg1:#0A1120;
   --bg2:#0D1828;
   --bg3:#121F35;
   --bg4:#172640;
@@ -28,12 +27,10 @@
   --text2:#8BA3CC;
   --text3:#3A5070;
   --green:#00D68F;
-  --green2:rgba(0,214,143,0.12);
   --red:#FF3B55;
   --orange:#FF9F0A;
   --purple:#BF5AF2;
   --blue:#0A84FF;
-  --teal:#5AC8FA;
   --tab-h:80px;
   --safe-top:env(safe-area-inset-top, 44px);
   --safe-bot:env(safe-area-inset-bottom, 20px);
@@ -111,9 +108,8 @@ body{
 .hstat svg{opacity:0.8;}
 
 /* ── Section header ── */
-.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-bottom:10px;}
+.sec-hd{display:flex;align-items:center;padding:0 20px;margin-bottom:10px;}
 .sec-title{font-size:13px;font-weight:700;letter-spacing:0.06em;color:var(--text3);text-transform:uppercase;}
-.sec-btn{font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;padding:4px 0;}
 
 /* ── Glass card ── */
 .glass-card{
@@ -219,19 +215,6 @@ body{
 .cx-footer{display:flex;gap:6px;padding:10px 14px 14px;border-top:0.5px solid var(--border);}
 .cx-btn-edit{flex:1;background:var(--glass);border:0.5px solid var(--border2);border-radius:12px;padding:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;text-align:center;}
 .cx-btn-reg{flex:2;border:none;border-radius:12px;padding:10px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;background:rgba(10,132,255,0.14);color:var(--blue);border:0.5px solid rgba(10,132,255,0.26);}
-
-/* ── Reg button big ── */
-.reg-btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  margin:0 16px 14px;
-  background:var(--blue);color:#fff;
-  border:none;border-radius:16px;
-  padding:17px;font-family:'DM Sans',sans-serif;
-  font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.01em;
-  box-shadow:0 4px 24px rgba(10,132,255,0.32);
-  transition:transform 0.12s,box-shadow 0.12s;
-}
-.reg-btn:active{transform:scale(0.97);box-shadow:0 2px 12px rgba(10,132,255,0.22);}
 
 /* ── Tab Bar ── */
 .tab-bar{
@@ -397,7 +380,6 @@ body{
       <span class="page-title">Carteira</span>
       <div class="header-actions">
         <div class="icon-btn" id="eye-btn" onclick="toggleOcultar()" title="Ocultar">👁</div>
-        <div class="icon-btn" onclick="abrirGerenciar()">＋</div>
       </div>
     </div>
 
@@ -436,13 +418,7 @@ body{
     <div class="divider"></div>
     <div class="sec-hd anim-in">
       <span class="sec-title">Caixinhas</span>
-      <span class="sec-btn" onclick="abrirNovaCaixinha()">+ Nova</span>
     </div>
-
-    <button class="reg-btn anim-in" onclick="abrirGerenciar()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Registrar saldo
-    </button>
 
     <div id="cx-cards"></div>
 
@@ -486,16 +462,6 @@ body{
             <div>
               <div class="data-row-title">Estatísticas</div>
               <div class="data-row-sub" id="data-stats-sub">—</div>
-            </div>
-          </div>
-          <div class="data-row-chevron">›</div>
-        </div>
-        <div class="data-row" onclick="abrirGerenciar()">
-          <div class="data-row-left">
-            <div class="data-row-icon orange">⚙️</div>
-            <div>
-              <div class="data-row-title">Gerenciar caixinhas</div>
-              <div class="data-row-sub" id="data-cx-sub">—</div>
             </div>
           </div>
           <div class="data-row-chevron">›</div>
@@ -627,7 +593,6 @@ function navTo(page){
 function updateDataPage(){
   var ativas=caixinhas.filter(function(c){return c.ativo!==false;});
   document.getElementById("data-stats-sub").textContent=ativas.length+" caixinhas · "+ativas.reduce(function(a,c){return a+c.registros.length;},0)+" registros";
-  document.getElementById("data-cx-sub").textContent=ativas.map(function(c){return c.nome;}).join(", ");
 }
 
 // ── Hero ──
