@@ -308,7 +308,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,-app
 <div class="overlay" id="overlay" onclick="fecharModalBg(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div class="sheet-handle"></div>
-    <div class="sheet-title" id="s-title"></div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">
+      <div class="sheet-title" id="s-title"></div>
+      <button onclick="closeModal()" style="background:rgba(255,255,255,0.08);border:0.5px solid rgba(255,255,255,0.12);border-radius:50%;width:32px;height:32px;font-size:16px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:12px;line-height:1">✕</button>
+    </div>
     <div class="sheet-sub" id="s-sub"></div>
     <div id="s-body"></div>
     <div class="sheet-btns" id="s-btns">
@@ -500,27 +503,23 @@ function abrirGraficoExpandido(){
   document.getElementById("s-body").innerHTML=
     '<div style="color:'+cor+';font-size:26px;font-weight:800;margin-bottom:4px">'+(totalPeriodo>=0?"+":"")+hv(fBRL(parseFloat(totalPeriodo.toFixed(2))))+'</div>'+
     '<div style="font-size:11px;color:var(--text3);margin-bottom:14px">Rendimento total · '+MESES[mes]+" "+ano+'</div>'+
-    // Linha: evolução do saldo
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Evolução do saldo</div>'+
-    '<div style="height:140px;position:relative;margin-bottom:16px"><canvas id="sheet-line-chart"></canvas></div>'+
-    // Barras: rendimento diário
-    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Rendimento diário</div>'+
-    '<div style="height:100px;position:relative;margin-bottom:12px"><canvas id="sheet-bar-chart"></canvas></div>'+
+    '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Rendimento acumulado + diário</div>'+
+    '<div style="height:220px;position:relative;margin-bottom:12px"><canvas id="sheet-combo-chart"></canvas></div>'+
     '<div class="chart-legend" id="sheet-legend" style="margin-bottom:4px"></div>'+
     '<div class="chart-detail-rows">'+detalhes+'</div>';
   openOverlay();
 
   requestAnimationFrame(function(){requestAnimationFrame(function(){
-    drawLineChart(document.getElementById("sheet-line-chart"),ano,mes,140);
-    drawDailyBars(document.getElementById("sheet-bar-chart"),bd.datasets,bd.dim,100);
+    drawComboChart(document.getElementById("sheet-combo-chart"),ano,mes,bd.datasets,bd.dim,220);
     document.getElementById("sheet-legend").innerHTML=cx.map(function(c){
       return '<div class="cl-item"'+(c.ativo===false?' style="opacity:.5"':"")+'><div class="cl-dot" style="background:'+getHex(c)+'"></div>'+c.nome+'</div>';
     }).join("");
   });});
 }
 
-// Gráfico de linha: evolução do saldo de cada caixinha ao longo do mês
-function drawLineChart(canvas,ano,mes,H){
+// Gráfico combo: barras diárias empilhadas por caixinha + linha de rendimento acumulado total
+function rrect(ctx,x,y,w,h,r){ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);}
+function drawComboChart(canvas,ano,mes,datasets,dim,H){
   if(!canvas||!canvas.parentElement)return;
   var W=canvas.parentElement.clientWidth;
   if(W<10)return;
@@ -529,125 +528,144 @@ function drawLineChart(canvas,ano,mes,H){
   canvas.style.width=W+"px";canvas.style.height=H+"px";
   var ctx=canvas.getContext("2d");
   ctx.scale(dpr,dpr);ctx.clearRect(0,0,W,H);
-  var dim=new Date(ano,mes+1,0).getDate();
-  var pL=52,pR=8,pT=8,pB=24,cW=W-pL-pR,cH=H-pT-pB;
 
-  // Para cada caixinha, mapear saldo por dia do mês
-  var ativas=cx.filter(function(c){return c.registros.length>0;});
-  var series=ativas.map(function(c){
-    // Pegar todos os registros até o fim do mês
-    var pts=[];
-    for(var d=1;d<=dim;d++){
-      var dataStr=ano+"-"+String(mes+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
-      // Último registro até esta data
-      var regsAte=c.registros.filter(function(r){return r.data<=dataStr;});
-      var ult=regsAte.length?regsAte[regsAte.length-1]:null;
-      pts.push(ult?ult.saldo:null);
-    }
-    // Preencher nulls iniciais com o primeiro valor disponível
-    var first=null;
-    for(var i=0;i<pts.length;i++){if(pts[i]!==null){first=pts[i];break;}}
-    if(first===null)return null;
-    // Preencher para trás
-    for(var i=0;i<pts.length;i++){if(pts[i]===null)pts[i]=first;else break;}
-    return{pts:pts,cor:getHex(c),nome:c.nome,ativo:c.ativo!==false};
-  }).filter(function(s){return s!==null;});
+  var pL=52,pR=16,pT=14,pB=24,cW=W-pL-pR,cH=H-pT-pB;
 
-  if(!series.length)return;
-
-  var allVals=[];
-  series.forEach(function(s){s.pts.forEach(function(v){if(v!==null)allVals.push(v);});});
-  var maxV=Math.max.apply(null,allVals);
-  var minV=Math.min.apply(null,allVals);
-  var range=maxV-minV||1;
-
-  function xP(i){return pL+(i/(dim-1))*cW;}
-  function yP(v){return pT+cH-((v-minV)/range)*cH;}
-
-  // Grid
-  ctx.strokeStyle="rgba(255,255,255,0.04)";ctx.lineWidth=0.5;
-  [0,0.5,1].forEach(function(t){var y=pT+t*cH;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();});
-
-  // Linhas de saldo
-  series.forEach(function(s){
-    var cor=s.cor;
-    // Área gradiente
-    var grad=ctx.createLinearGradient(0,pT,0,pT+cH);
-    grad.addColorStop(0,cor+"25");grad.addColorStop(1,cor+"00");
-    ctx.save();ctx.globalAlpha=s.ativo?1:0.4;
-    // Área
-    ctx.fillStyle=grad;ctx.beginPath();
-    var firstPt=true;
-    s.pts.forEach(function(v,i){if(v===null)return;if(firstPt){ctx.moveTo(xP(i),yP(v));firstPt=false;}else ctx.lineTo(xP(i),yP(v));});
-    ctx.lineTo(xP(dim-1),yP(minV));ctx.lineTo(xP(0),yP(minV));ctx.closePath();ctx.fill();
-    // Linha
-    ctx.strokeStyle=cor;ctx.lineWidth=2;ctx.lineJoin="round";ctx.lineCap="round";
-    ctx.beginPath();firstPt=true;
-    s.pts.forEach(function(v,i){if(v===null)return;if(firstPt){ctx.moveTo(xP(i),yP(v));firstPt=false;}else ctx.lineTo(xP(i),yP(v));});
-    ctx.stroke();
-    // Ponto no último valor
-    var last=null;
-    for(var i=s.pts.length-1;i>=0;i--){if(s.pts[i]!==null){last={v:s.pts[i],i:i};break;}}
-    if(last){ctx.fillStyle=cor;ctx.beginPath();ctx.arc(xP(last.i),yP(last.v),4,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(xP(last.i),yP(last.v),1.8,0,Math.PI*2);ctx.fill();}
-    ctx.restore();
-  });
-
-  // Eixos
-  ctx.fillStyle="#344D68";ctx.font="9px DM Sans,sans-serif";ctx.textAlign="right";
-  [0,0.5,1].forEach(function(t){var v=minV+t*range;ctx.fillText("R$"+(v>=1000?(v/1000).toFixed(1)+"k":v.toFixed(0)),pL-4,yP(v)+3);});
-  ctx.textAlign="center";
-  [0,7,14,21,dim-1].forEach(function(i){if(i<dim)ctx.fillText(i+1,xP(i),H-6);});
-}
-
-// Barras: rendimento diário (apenas pontos onde há lançamentos)
-function drawDailyBars(canvas,datasets,dim,H){
-  if(!canvas||!canvas.parentElement)return;
-  var W=canvas.parentElement.clientWidth;
-  if(W<10)return;
-  var dpr=window.devicePixelRatio||1;
-  canvas.width=W*dpr;canvas.height=H*dpr;
-  canvas.style.width=W+"px";canvas.style.height=H+"px";
-  var ctx=canvas.getContext("2d");
-  ctx.scale(dpr,dpr);ctx.clearRect(0,0,W,H);
-  var pL=46,pR=8,pT=4,pB=20,cW=W-pL-pR,cH=H-pT-pB;
-
-  // Rendimento diário (não acumulado) por dia
+  // ── Dados ────────────────────────────────────────────
+  // Rendimento DIÁRIO por caixinha
   var dailyByDs=datasets.map(function(ds){
     var daily=new Array(dim).fill(0);
-    for(var i=1;i<dim;i++){daily[i]=parseFloat(((ds.data[i]||0)-(ds.data[i-1]||0)).toFixed(4));}
     daily[0]=parseFloat((ds.data[0]||0).toFixed(4));
+    for(var i=1;i<dim;i++){
+      var d=parseFloat(((ds.data[i]||0)-(ds.data[i-1]||0)).toFixed(4));
+      daily[i]=d>0?d:0;
+    }
     return daily;
   });
 
-  var stacked=new Array(dim).fill(0);
-  for(var i=0;i<dim;i++){stacked[i]=dailyByDs.reduce(function(a,d){return a+(d[i]||0);},0);}
-  var maxV=Math.max.apply(null,stacked.concat([0.01]));
+  // Soma diária total (para eixo Y esquerdo das barras)
+  var dailyTotal=new Array(dim).fill(0);
+  for(var i=0;i<dim;i++){dailyByDs.forEach(function(d){dailyTotal[i]+=d[i]||0;});}
+  var maxBar=Math.max.apply(null,dailyTotal.concat([0.01]));
+
+  // Rendimento ACUMULADO total (linha)
+  var acum=new Array(dim).fill(0);
+  cx.forEach(function(c){
+    var regs=calcR(c.registros).filter(function(r){
+      if(r.rendimento===null)return false;
+      var d=new Date(r.data+"T12:00:00");
+      return d.getFullYear()===ano&&d.getMonth()===mes;
+    });
+    var run=0;
+    for(var i=0;i<dim;i++){
+      var dia=i+1;
+      regs.forEach(function(r){if(new Date(r.data+"T12:00:00").getDate()===dia)run+=r.rendimento;});
+      acum[i]+=run;
+    }
+  });
+  var maxLine=Math.max.apply(null,acum.concat([0.01]));
+  var minLine=Math.min.apply(null,acum.concat([0]));
+  var rangeL=maxLine-minLine||1;
 
   function xBar(i){return pL+(i/dim)*cW;}
-  function barW(){return Math.max(1,cW/dim-1);}
-  function yH(v){return(v/maxV)*cH;}
+  function bW(){return Math.max(1.5,cW/dim-1.5);}
+  function yBar(v){return pT+cH-(v/maxBar)*cH;}
+  function xLine(i){return pL+(i/(dim-1||1))*cW+bW()/2;}
+  function yLine(v){return pT+cH-((v-minLine)/rangeL)*cH;}
 
-  ctx.strokeStyle="rgba(255,255,255,0.03)";ctx.lineWidth=0.5;
-  [0.5,1].forEach(function(t){var y=pT+cH-t*cH;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();});
+  // ── Grid ─────────────────────────────────────────────
+  ctx.strokeStyle="rgba(255,255,255,0.04)";ctx.lineWidth=0.5;
+  [0,0.25,0.5,0.75,1].forEach(function(t){
+    var y=pT+t*cH;
+    ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
+  });
 
+  // ── Barras empilhadas ─────────────────────────────────
   for(var d=0;d<dim;d++){
     var baseY=pT+cH;
     datasets.forEach(function(ds,ci){
       var v=dailyByDs[ci][d]||0;if(v<=0)return;
-      var h=yH(v),x=xBar(d),bw=barW(),r=2;
-      ctx.fillStyle=ds.cor+(ds.ativo?"DD":"44");
-      ctx.beginPath();ctx.moveTo(x+r,baseY-h);ctx.lineTo(x+bw-r,baseY-h);
-      ctx.quadraticCurveTo(x+bw,baseY-h,x+bw,baseY-h+r);
-      ctx.lineTo(x+bw,baseY);ctx.lineTo(x,baseY);ctx.lineTo(x,baseY-h+r);
-      ctx.quadraticCurveTo(x,baseY-h,x+r,baseY-h);ctx.closePath();ctx.fill();
-      baseY-=h;
+      var barH=Math.max(1,(v/maxBar)*cH);
+      var x=xBar(d),bw=bW(),r=Math.min(2,bw/2);
+      ctx.fillStyle=ds.cor+(ds.ativo?"CC":"33");
+      var isTop=(dailyByDs.slice(ci+1).every(function(dd){return(dd[d]||0)<=0;}));
+      ctx.beginPath();
+      if(isTop&&r>0&&barH>r){
+        ctx.moveTo(x+r,baseY-barH);ctx.lineTo(x+bw-r,baseY-barH);
+        ctx.quadraticCurveTo(x+bw,baseY-barH,x+bw,baseY-barH+r);
+        ctx.lineTo(x+bw,baseY);ctx.lineTo(x,baseY);ctx.lineTo(x,baseY-barH+r);
+        ctx.quadraticCurveTo(x,baseY-barH,x+r,baseY-barH);
+      } else {
+        ctx.rect(x,baseY-barH,bw,barH);
+      }
+      ctx.closePath();ctx.fill();
+      baseY-=barH;
     });
   }
 
-  ctx.fillStyle="#344D68";ctx.font="9px DM Sans,sans-serif";ctx.textAlign="right";
-  [0.5,1].forEach(function(t){var v=t*maxV;ctx.fillText("R$"+v.toFixed(2),pL-4,pT+cH-t*cH+3);});
-  ctx.textAlign="center";
-  [0,7,14,21,dim-1].forEach(function(i){if(i<dim)ctx.fillText(i+1,xBar(i)+barW()/2,H-4);});
+  // ── Linha acumulada ───────────────────────────────────
+  // Área preenchida
+  var gradL=ctx.createLinearGradient(0,pT,0,pT+cH);
+  gradL.addColorStop(0,"rgba(48,209,88,0.18)");
+  gradL.addColorStop(1,"rgba(48,209,88,0.00)");
+  ctx.fillStyle=gradL;
+  ctx.beginPath();ctx.moveTo(xLine(0),yLine(minLine));
+  acum.forEach(function(v,i){ctx.lineTo(xLine(i),yLine(v));});
+  ctx.lineTo(xLine(dim-1),yLine(minLine));ctx.closePath();ctx.fill();
+
+  // Linha
+  ctx.strokeStyle="#30D158";ctx.lineWidth=2.5;ctx.lineJoin="round";ctx.lineCap="round";
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  acum.forEach(function(v,i){i===0?ctx.moveTo(xLine(i),yLine(v)):ctx.lineTo(xLine(i),yLine(v));});
+  ctx.stroke();
+
+  // Ponto final
+  var lastI=dim-1,lastV=acum[lastI];
+  ctx.fillStyle="#30D158";ctx.beginPath();ctx.arc(xLine(lastI),yLine(lastV),5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(xLine(lastI),yLine(lastV),2,0,Math.PI*2);ctx.fill();
+
+  // Label valor final com fundo escuro para visibilidade
+  var labelTxt=(lastV>=0?"+":"")+fBRL(parseFloat(lastV.toFixed(2)));
+  ctx.font="bold 10px DM Sans,system-ui,sans-serif";
+  var lw=ctx.measureText(labelTxt).width;
+  var lx=xLine(lastI),ly=yLine(lastV)-12;
+  var pad=5,rr=5;
+  // Ajustar para não sair pela direita
+  if(lx+lw/2+6>W-pR)lx=W-pR-lw/2-6;
+  if(lx-lw/2-6<pL)lx=pL+lw/2+6;
+  // Fundo pill
+  ctx.fillStyle="rgba(6,11,20,0.85)";
+  ctx.beginPath();rrect(ctx,lx-lw/2-pad,ly-12,lw+pad*2,16,rr);ctx.closePath();ctx.fill();
+  // Borda fina
+  ctx.strokeStyle="rgba(48,209,88,0.4)";ctx.lineWidth=0.5;
+  ctx.beginPath();rrect(ctx,lx-lw/2-pad,ly-12,lw+pad*2,16,rr);ctx.closePath();ctx.stroke();
+  // Texto
+  ctx.fillStyle="#30D158";ctx.textAlign="center";
+  ctx.fillText(labelTxt,lx,ly);
+
+  // ── Eixo Y esquerdo (barras) ──────────────────────────
+  ctx.fillStyle="#344D68";ctx.font="9px DM Sans,system-ui,sans-serif";ctx.textAlign="right";
+  [0,0.5,1].forEach(function(t){
+    var v=t*maxBar;
+    var y=pT+cH-t*cH;
+    ctx.fillText("R$"+v.toFixed(2),pL-4,y+3);
+  });
+
+  // ── Eixo X ────────────────────────────────────────────
+  ctx.fillStyle="#344D68";ctx.textAlign="center";
+  [0,7,14,21,dim-1].forEach(function(i){
+    if(i<dim)ctx.fillText(i+1,xBar(i)+bW()/2,H-6);
+  });
+
+  // ── Legenda no canto: linha = acumulado ───────────────
+  ctx.fillStyle="rgba(6,11,20,0.7)";
+  ctx.beginPath();rrect(ctx,pL+2,pT+2,90,16,4);ctx.closePath();ctx.fill();
+  ctx.fillStyle="#344D68";ctx.font="9px DM Sans,system-ui,sans-serif";ctx.textAlign="left";
+  // Linha verde pequena
+  ctx.strokeStyle="#30D158";ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pL+6,pT+10);ctx.lineTo(pL+18,pT+10);ctx.stroke();
+  ctx.fillStyle="#7A96BE";ctx.fillText("acumulado",pL+22,pT+13);
 }
 
 function renderMonthSummary(){
@@ -922,13 +940,14 @@ function abrirModos(id){
       '<div class="mode-btn" onclick="escolherModo('+id+',\'rendimento\')"><div class="m-ico">✨</div><div class="m-title">Só rendimento</div><div class="m-sub">Informe quanto rendeu sem o saldo total</div></div>'+
       '<div class="mode-btn" onclick="escolherModo('+id+',\'deposito\')"><div class="m-ico">📥</div><div class="m-title">Depósito</div><div class="m-sub">Colocou dinheiro nesta caixinha</div></div>'+
       '<div class="mode-btn" onclick="escolherModo('+id+',\'retirada\')"><div class="m-ico">📤</div><div class="m-title">Retirada</div><div class="m-sub">Retirou dinheiro desta caixinha</div></div>'+
+      '<div class="mode-btn" onclick="escolherModo('+id+',\'zerar\')" style="grid-column:1/-1"><div class="m-ico">🔴</div><div class="m-title">Zerar caixinha</div><div class="m-sub">Retirar todo o saldo e zerar</div></div>'+
     '</div>';
 }
 
 function escolherModo(id,modo){
   var c=cx.find(function(x){return x.id===id;});
   modalState={tipo:"saldo",id:id,modo:modo};
-  var titulos={completo:"Registrar saldo",rendimento:"Registrar rendimento",deposito:"Registrar depósito",retirada:"Registrar retirada"};
+  var titulos={completo:"Registrar saldo",rendimento:"Registrar rendimento",deposito:"Registrar depósito",retirada:"Registrar retirada",zerar:"Zerar caixinha"};
   document.getElementById("s-title").textContent=titulos[modo]||"Registrar";
   document.getElementById("s-sub").textContent=c.nome;
   document.getElementById("s-btns").style.display="flex";
@@ -972,6 +991,17 @@ function buildFormPorModo(id,modo){
       '<div class="field-hint">Saldo novo = '+(ult2?fBRL(ult2.saldo)+' - retirada':'saldo - retirada')+'</div></div>'+
       '<div class="field"><label>Data</label><input type="date" id="i-data" value="'+hoje()+'"/></div>';
   }
+  if(modo==="zerar"){
+    var cz=cx.find(function(x){return x.id===id;});
+    var ultz=cz&&cz.registros.length?cz.registros[cz.registros.length-1]:null;
+    var saldoAtual=ultz?ultz.saldo:0;
+    return '<div style="background:rgba(255,59,48,0.08);border:0.5px solid rgba(255,59,48,0.25);border-radius:16px;padding:16px;margin-bottom:14px;text-align:center">'+
+      '<div style="font-size:13px;color:var(--text3);margin-bottom:6px">Saldo atual</div>'+
+      '<div style="font-size:28px;font-weight:800;color:var(--red)">'+fBRL(saldoAtual)+'</div>'+
+      '<div style="font-size:11px;color:var(--text3);margin-top:4px">Todo o saldo será retirado e a caixinha ficará em R$ 0,00</div>'+
+    '</div>'+
+    '<div class="field"><label>Data da retirada</label><input type="date" id="i-data" value="'+hoje()+'"/></div>';
+  }
   return buildSaldoForm(id,false);
 }
 
@@ -1012,6 +1042,16 @@ function confirmar(){
         var ult=c.registros[c.registros.length-1];
         var novoSaldo=parseFloat(((ult?ult.saldo:0)-retVal).toFixed(2));
         var n=c.registros.concat([{id:Date.now(),data:data,saldo:novoSaldo,entrada:0,saida:retVal}]);
+        n.sort(function(a,b){return a.data.localeCompare(b.data);});
+        return Object.assign({},c,{registros:n});
+      });
+    } else if(modo==="zerar"){
+      cx=cx.map(function(c){
+        if(c.id!==modalState.id)return c;
+        var ult=c.registros[c.registros.length-1];
+        var saldoAtual=ult?ult.saldo:0;
+        if(saldoAtual===0)return c;
+        var n=c.registros.concat([{id:Date.now(),data:data,saldo:0,entrada:0,saida:saldoAtual}]);
         n.sort(function(a,b){return a.data.localeCompare(b.data);});
         return Object.assign({},c,{registros:n});
       });
