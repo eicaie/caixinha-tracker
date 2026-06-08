@@ -721,57 +721,73 @@ function renderMonthSummary(){
 // ── Resumo expandido ───────────────────────────────────
 function abrirResumoExpandido(){
   if(!mesSel)return;
-  var ano=mesSel.ano,mes=mesSel.mes;
-  var rows=cx.map(function(c){
-    var regsM=calcR(c.registros).filter(function(r){var d=new Date(r.data+"T12:00:00");return d.getFullYear()===ano&&d.getMonth()===mes;});
-    var rend=rendMesAno(c.registros,ano,mes)||0;
-    return{c:c,rend:rend,regsM:regsM};
-  }).filter(function(r){return r.regsM.length>0;});
+  renderResumoExpandido(mesSel.ano,mesSel.mes);
+}
+
+function renderResumoExpandido(ano,mes){
+  // Consolidar todos os lançamentos do mês por data (todas as caixinhas juntas)
+  var porData={};
+  cx.forEach(function(c){
+    var regsM=calcR(c.registros).filter(function(r){
+      var d=new Date(r.data+"T12:00:00");
+      return d.getFullYear()===ano&&d.getMonth()===mes;
+    });
+    regsM.forEach(function(r){
+      if(!porData[r.data])porData[r.data]={data:r.data,entrada:0,saida:0,rendimento:0,dots:[]};
+      porData[r.data].entrada+=r.entrada||0;
+      porData[r.data].saida+=r.saida||0;
+      if(r.rendimento!==null)porData[r.data].rendimento+=r.rendimento;
+      // Dot da caixinha para identificação visual
+      if(porData[r.data].dots.indexOf(getHex(c))<0)porData[r.data].dots.push(getHex(c));
+    });
+  });
+  var dias=Object.keys(porData).sort();
 
   var html="";
-  rows.forEach(function(row){
-    var cor=getHex(row.c);
-    var rCor=row.rend>=0?"var(--green)":"var(--red)";
-    html+='<div style="margin-bottom:20px">'+
-      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
-        '<span style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px">'+
-          '<div style="width:8px;height:8px;border-radius:50%;background:'+cor+'"></div>'+row.c.nome+
-        '</span>'+
-        '<span style="font-size:14px;font-weight:700;color:'+rCor+'">'+(row.rend>=0?"+":"")+hv(fBRL(parseFloat(row.rend.toFixed(2))))+'</span>'+
-      '</div>'+
-      '<div class="ms-detail-rows">';
-    row.regsM.forEach(function(r){
-      var ent=r.entrada||0,sai=r.saida||0;
-      var movStr="";
-      if(ent>0)movStr='<span style="color:var(--green);font-size:11px">+'+fBRL(ent)+'</span>';
-      else if(sai>0)movStr='<span style="color:var(--orange);font-size:11px">-'+fBRL(sai)+'</span>';
-      var rStr=r.rendimento!==null?'<span style="color:'+(r.rendimento>=0?"var(--green)":"var(--red)")+';font-weight:700">'+(r.rendimento>=0?"+":"")+fBRL(parseFloat(r.rendimento.toFixed(2)))+'</span>':'<span style="color:var(--text3)">—</span>';
-      html+='<div class="ms-detail-row">'+
-        '<span class="ms-detail-date">'+fData(r.data)+'</span>'+
-        '<span class="ms-detail-saldo">'+hv(fBRL(r.saldo))+'</span>'+
-        (movStr||'<span></span>')+
-        rStr+
+  dias.forEach(function(data){
+    var d=porData[data];
+    var rCor=d.rendimento>=0?"var(--green)":"var(--red)";
+    var rendStr=d.rendimento!==0
+      ?'<span style="font-size:13px;font-weight:700;color:'+rCor+'">'+(d.rendimento>=0?"+":"")+hv(fBRL(parseFloat(d.rendimento.toFixed(2))))+'</span>'
+      :'<span style="color:var(--text3)">—</span>';
+    var movStr="";
+    if(d.entrada>0)movStr+='<span style="font-size:11px;color:var(--green)">+'+fBRL(parseFloat(d.entrada.toFixed(2)))+'</span>';
+    if(d.saida>0)movStr+=(movStr?' ':'')+' <span style="font-size:11px;color:var(--orange)">-'+fBRL(parseFloat(d.saida.toFixed(2)))+'</span>';
+    var dotsHtml=d.dots.map(function(cor){return '<div style="width:6px;height:6px;border-radius:50%;background:'+cor+'"></div>';}).join("");
+    html+=
+      '<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(0,0,0,0.2);border-radius:13px;margin-bottom:6px;border:0.5px solid rgba(255,255,255,0.025)">'+
+        '<span style="font-size:11px;color:var(--text3);flex-shrink:0;min-width:58px">'+fData(data)+'</span>'+
+        '<div style="display:flex;gap:3px;flex-shrink:0">'+dotsHtml+'</div>'+
+        '<div style="flex:1;display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap">'+
+          (movStr?movStr+' ':'')+rendStr+
+        '</div>'+
       '</div>';
-    });
-    html+='</div></div>';
   });
 
   var bd=buildDatasets(ano,mes);
   var totalPeriodo=bd.datasets.reduce(function(a,ds){return a+(ds.data[bd.dim-1]||0);},0);
   var cor=totalPeriodo>=0?"var(--green)":"var(--red)";
 
+  var meses=getMeses();
+  var pillsHtml=meses.map(function(m){
+    var on=m.ano===ano&&m.mes===mes;
+    return '<div onclick="renderResumoExpandido('+m.ano+','+m.mes+')" style="padding:7px 14px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;flex-shrink:0;white-space:nowrap;background:'+(on?"rgba(10,132,255,0.14)":"rgba(255,255,255,0.04)")+';border:0.5px solid '+(on?"rgba(10,132,255,0.28)":"rgba(255,255,255,0.07)")+';color:'+(on?"var(--blue)":"var(--text3)")+'">'+MESES[m.mes]+" "+m.ano+'</div>';
+  }).join("");
+
   modalState={tipo:"resumo_expandido"};
-  document.getElementById("s-title").textContent=MESES[mes]+" "+ano;
-  document.getElementById("s-sub").textContent="Rendimento + lançamentos do mês";
+  document.getElementById("s-title").textContent="Resumo mensal";
+  document.getElementById("s-sub").textContent="";
   document.getElementById("s-btns").style.display="none";
   document.getElementById("s-body").innerHTML=
+    '<div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:14px;padding-bottom:2px">'+pillsHtml+'</div>'+
     '<div style="color:'+cor+';font-size:22px;font-weight:800;margin-bottom:4px">'+(totalPeriodo>=0?"+":"")+hv(fBRL(parseFloat(totalPeriodo.toFixed(2))))+'</div>'+
-    '<div style="font-size:11px;color:var(--text3);margin-bottom:12px">Rendimento total · '+MESES[mes]+" "+ano+'</div>'+
+    '<div style="font-size:11px;color:var(--text3);margin-bottom:12px">'+MESES[mes]+" "+ano+'</div>'+
     '<div style="height:200px;position:relative;margin-bottom:8px"><canvas id="sheet-combo-chart"></canvas></div>'+
     '<div class="chart-legend" id="sheet-combo-legend" style="margin-bottom:18px"></div>'+
-    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:12px">Lançamentos por caixinha</div>'+
-    (html||'<div style="text-align:center;color:var(--text3);padding:24px">Sem dados</div>');
-  openOverlay();
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px">Movimentos diários</div>'+
+    (html||'<div style="text-align:center;color:var(--text3);padding:24px">Sem lançamentos</div>');
+
+  if(!document.getElementById("overlay").classList.contains("open"))openOverlay();
   requestAnimationFrame(function(){requestAnimationFrame(function(){
     drawComboChart(document.getElementById("sheet-combo-chart"),ano,mes,bd.datasets,bd.dim,200);
     var leg=document.getElementById("sheet-combo-legend");
@@ -780,6 +796,7 @@ function abrirResumoExpandido(){
     }).join("");
   });});
 }
+
 
 // ── Evolução histórica do patrimônio (por mês) ─────────
 function abrirEvolucaoPatrimonio(){
